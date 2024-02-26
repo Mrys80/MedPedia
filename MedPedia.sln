@@ -1,0 +1,65 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio Version 17
+VisualStudioVersion = 17.2.32630.192
+MinimumVisualStudioVersion = 10.0.40219.1
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "MedPedia.Common", "src\MedPedia.Common\MedPedia.Common.csproj", "{9775E73C-D9F4-405D-9A1F-AFF035C999FD}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "MedPedia.Entities", "src\MedPedia.Entities\MedPedia.Entities.csproj", "{584A87A3-0D1A-401C-8F60-970DEC61B7D8}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "MedPedia.Data", "src\MedPedia.Data\MedPedia.Data.csproj", "{39CDF170-2DE7-45A1-A432-723CCEE5CBDE}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "MedPedia.Services", "src\MedPedia.Services\MedPedia.Services.csproj", "{EBC7B8AC-BE81-45B0-919F-211D71AAC4CB}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "MedPedia.WebApi", "src\MedPedia.WebApi\MedPedia.WebApi.csproj", "{C3CF541D-4B1A-4FEF-81F1-7C4E80A3401B}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "MedPedia.WebFramework", "src\MedPedia.WebFramework\MedPedia.WebFramework.csproj", "{AA51F34A-B006-4456-8BCE-65D6279F75FD}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "src", "src", "{5F02799F-05FD-4D84-97A7-B5AE1C9F1F8B}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{9775E73C-D9F4-405D-9A1F-AFF035C999FD}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{9775E73C-D9F4-405D-9A1F-AFF035C999FD}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{9775E73C-D9F4-405D-9A1F-AFF035C999FD}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{9775E73C-D9F4-405D-9A1F-AFF035C999FD}.Release|Any CPU.Build.0 = Release|Any CPU
+		{584A87A3-0D1A-401C-8F60-970DEC61B7D8}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{584A87A3-0D1A-401C-8F60-970DEC61B7D8}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{584A87A3-0D1A-401C-8F60-970DEC61B7D8}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{584A87A3-0D1A-401C-8F60-970DEC61B7D8}.Release|Any CPU.Build.0 = Release|Any CPU
+		{39CDF170-2DE7-45A1-A432-723CCEE5CBDE}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{39CDF170-2DE7-45A1-A432-723CCEE5CBDE}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{39CDF170-2DE7-45A1-A432-723CCEE5CBDE}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{39CDF170-2DE7-45A1-A432-723CCEE5CBDE}.Release|Any CPU.Build.0 = Release|Any CPU
+		{EBC7B8AC-BE81-45B0-919F-211D71AAC4CB}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{EBC7B8AC-BE81-45B0-919F-211D71AAC4CB}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{EBC7B8AC-BE81-45B0-919F-211D71AAC4CB}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{EBC7B8AC-BE81-45B0-919F-211D71AAC4CB}.Release|Any CPU.Build.0 = Release|Any CPU
+		{C3CF541D-4B1A-4FEF-81F1-7C4E80A3401B}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{C3CF541D-4B1A-4FEF-81F1-7C4E80A3401B}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{C3CF541D-4B1A-4FEF-81F1-7C4E80A3401B}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{C3CF541D-4B1A-4FEF-81F1-7C4E80A3401B}.Release|Any CPU.Build.0 = Release|Any CPU
+		{AA51F34A-B006-4456-8BCE-65D6279F75FD}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{AA51F34A-B006-4456-8BCE-65D6279F75FD}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{AA51F34A-B006-4456-8BCE-65D6279F75FD}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{AA51F34A-B006-4456-8BCE-65D6279F75FD}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(NestedProjects) = preSolution
+		{9775E73C-D9F4-405D-9A1F-AFF035C999FD} = {5F02799F-05FD-4D84-97A7-B5AE1C9F1F8B}
+		{584A87A3-0D1A-401C-8F60-970DEC61B7D8} = {5F02799F-05FD-4D84-97A7-B5AE1C9F1F8B}
+		{39CDF170-2DE7-45A1-A432-723CCEE5CBDE} = {5F02799F-05FD-4D84-97A7-B5AE1C9F1F8B}
+		{EBC7B8AC-BE81-45B0-919F-211D71AAC4CB} = {5F02799F-05FD-4D84-97A7-B5AE1C9F1F8B}
+		{C3CF541D-4B1A-4FEF-81F1-7C4E80A3401B} = {5F02799F-05FD-4D84-97A7-B5AE1C9F1F8B}
+		{AA51F34A-B006-4456-8BCE-65D6279F75FD} = {5F02799F-05FD-4D84-97A7-B5AE1C9F1F8B}
+	EndGlobalSection
+	GlobalSection(ExtensibilityGlobals) = postSolution
+		SolutionGuid = {EDE361A1-FB43-4E3E-8B6B-03E04D50DE54}
+	EndGlobalSection
+EndGlobal

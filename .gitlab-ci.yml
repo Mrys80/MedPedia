@@ -1,0 +1,36 @@
+stages:
+  - publish
+  - deploy
+  
+image: gitlab/dind
+
+services:
+  - docker:dind
+
+
+publish:
+  stage: publish
+  script:
+    - docker build -t golddig:$CI_COMMIT_TAG .
+    - docker login -u $REGISTRY_USER -p $REGISTRY_PASSWORD http://$REGISTRY_IP
+    - docker image tag golddig:$CI_COMMIT_TAG $REGISTRY_IP/sarmadmedical/golddig:$CI_COMMIT_TAG
+    - docker image push $REGISTRY_IP/sarmadmedical/golddig:$CI_COMMIT_TAG
+  only:
+    - /^stg-v.*$/
+    - /^prod-v.*$/
+  except:
+    - branches
+
+
+
+deploy:
+  stage: deploy
+  script:
+    - ssh $SSH_USER@$SSH_IP -C "docker login -u $REGISTRY_USER -p $REGISTRY_PASSWORD http://$REGISTRY_IP"
+    - ssh $SSH_USER@$SSH_IP -C "docker pull $REGISTRY_IP/sarmadmedical/golddig:$CI_COMMIT_TAG"
+    - ssh $SSH_USER@$SSH_IP -C "docker container rm -f golddig || true"
+    - ssh $SSH_USER@$SSH_IP -C "docker run -i -d --env ASPNETCORE_ENVIRONMENT=Production --restart unless-stopped -p 80:80 --name golddig $REGISTRY_IP/sarmadmedical/golddig:$CI_COMMIT_TAG"
+  only:
+    - /^stg-v.*$/
+  except:
+    - branches
