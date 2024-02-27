@@ -1,6 +1,6 @@
 using Autofac.Extensions.DependencyInjection;
 
-namespace Teb.WebApi;
+namespace MedPedia.WebApi;
 
 public class Program
 {

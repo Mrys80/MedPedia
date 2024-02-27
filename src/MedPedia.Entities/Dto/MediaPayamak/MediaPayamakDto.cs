@@ -1,6 +1,6 @@
 ﻿using MedPedia.Common.Entities.Abstracts;
 
-namespace MedPedia.Entities.Entities.MediaPayamak;
+namespace MedPedia.Entities.Dto.MediaPayamak;
 
 public class MediaPayamakDto:IDto
 {

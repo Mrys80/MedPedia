@@ -1,4 +1,4 @@
-﻿namespace Reservation.Entities.Enums;
+﻿namespace MedPedia.Entities.Enums;
 
 public enum Roles
 {

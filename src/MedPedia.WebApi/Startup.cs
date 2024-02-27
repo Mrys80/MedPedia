@@ -3,7 +3,7 @@ using MedPedia.Common.Utilities.Settings;
 using MedPedia.WebFramework.Configuration;
 using MedPedia.WebFramework.Swagger;
 
-namespace Teb.WebApi;
+namespace MedPedia.WebApi;
 
 public class Startup
 {

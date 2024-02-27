@@ -1,4 +1,4 @@
-﻿namespace Reservation.Common.Utilities.Constants;
+﻿namespace MedPedia.Common.Utilities.Constants;
 
 public class SMSConstant
 {

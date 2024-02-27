@@ -54,6 +54,12 @@ public class Repository<TEntity> : IRepository<TEntity>, IScopedDependency
         return await Entities.FirstOrDefaultAsync(filter, cancellationToken);
     }
 
+    public virtual async ValueTask<List<TEntity>> GetListAsync(Expression<Func<TEntity, bool>> filter,
+        CancellationToken cancellationToken = default)
+    {
+        return await Entities.Where(filter).ToListAsync(cancellationToken);
+    }
+
     public virtual ValueTask<TEntity> GetByIdAsync(CancellationToken cancellationToken, params object[] ids)
     {
         return Entities.FindAsync(ids, cancellationToken);

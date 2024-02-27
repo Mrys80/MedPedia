@@ -6,7 +6,7 @@
     <ImplicitUsings>enable</ImplicitUsings>
     <UserSecretsId>00de6a81-2982-4a56-929f-465a9e67d4b6</UserSecretsId>
     <DockerDefaultTargetOS>Linux</DockerDefaultTargetOS>
-    <RootNamespace>Teb.WebApi</RootNamespace>
+    <RootNamespace>MedPedia.WebApi</RootNamespace>
   </PropertyGroup>
 
   <ItemGroup>
