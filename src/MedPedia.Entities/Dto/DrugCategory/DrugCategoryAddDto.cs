@@ -4,6 +4,7 @@ namespace MedPedia.Entities.Dto.DrugCategory;
 
 public class DrugCategoryAddDto:IDto
 {
-    public string Title { get; set; }
+    public string FaTitle { get; set; }
+    public string EnTitle { get; set; }
     public string? ImageId { get; set; }
 }
