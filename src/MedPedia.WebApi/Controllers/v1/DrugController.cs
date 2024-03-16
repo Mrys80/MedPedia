@@ -1,4 +1,5 @@
-﻿using MedPedia.Entities.Dto.Drug;
+﻿using MedPedia.Entities.Dto;
+using MedPedia.Entities.Dto.Drug;
 using MedPedia.Entities.Dto.DrugCategory;
 using MedPedia.Services.Abstracts;
 using MedPedia.WebFramework.Api;
@@ -23,10 +24,11 @@ public class DrugController : BaseController
 
     [HttpGet("[action]")]
     public async Task<IActionResult> GetAllDrug(
+        [FromBody] BaseGetDto baseGetDto,
         CancellationToken cancellationToken)
     {
         var result =
-            await _drugService.GetAllDrug(cancellationToken);
+            await _drugService.GetAllDrug(baseGetDto, cancellationToken);
 
         if (!result.IsSuccess)
             return BadRequest(result);
@@ -98,7 +100,7 @@ public class DrugController : BaseController
 
 
     [HttpGet("[action]")]
-    public async Task<IActionResult> SearchDrug([FromQuery]string text, CancellationToken cancellationToken)
+    public async Task<IActionResult> SearchDrug([FromQuery] string text, CancellationToken cancellationToken)
     {
         if (string.IsNullOrWhiteSpace(text))
         {
@@ -112,9 +114,9 @@ public class DrugController : BaseController
 
         return Ok(result);
     }
-    
+
     [HttpGet("[action]")]
-    public async Task<IActionResult> SearchDrugCategories([FromQuery]string text, CancellationToken cancellationToken)
+    public async Task<IActionResult> SearchDrugCategories([FromQuery] string text, CancellationToken cancellationToken)
     {
         if (string.IsNullOrWhiteSpace(text))
         {

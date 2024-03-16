@@ -13,7 +13,7 @@ namespace MedPedia.Services.Abstracts;
 
 public interface IDrugService
 {
-    Task<IListResult<List<DrugGetDto>>> GetAllDrug(CancellationToken cancellationToken);
+    Task<IListResult<List<DrugGetDto>>> GetAllDrug(BaseGetDto baseGetDto,CancellationToken cancellationToken);
     Task<IListResult<List<DrugGetDto>>> GetAllDrugByCategoryId(int drugCategoryId, CancellationToken cancellationToken);
 
     Task<IDataResult<DrugGetDto>> AddDrug(CurrentUserDto currentUser, DrugAddDto drugAddDto,

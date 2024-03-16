@@ -63,11 +63,14 @@ public class DrugService : IDrugService, IDrugCategoryService, IScopedDependency
     }
 
     public async Task<IListResult<List<DrugGetDto>>> GetAllDrug(
+        BaseGetDto baseGetDto,
         CancellationToken cancellationToken)
     {
         var drugs = await _drugRepository
             .GetListAsync(drug => drug.IsDeleted == false, cancellationToken);
-        var drugsDto = drugs.Select(drug => new DrugGetDto
+
+        var sortedDrugs = drugs
+            .Select(drug => new DrugGetDto
             {
                 Id = drug.Id,
                 FaTitle = drug.FaTitle,
@@ -77,7 +80,13 @@ public class DrugService : IDrugService, IDrugCategoryService, IScopedDependency
             })
             .OrderBy(drugDto => drugDto.FaTitle, new PersianComparer())
             .ToList();
-        return new SuccessListResult<List<DrugGetDto>>(drugsDto);
+
+        var paginatedDrugs = sortedDrugs
+            .Skip(baseGetDto.Offset)
+            .Take(baseGetDto.Limit)
+            .ToList();
+
+        return new SuccessListResult<List<DrugGetDto>>(paginatedDrugs);
     }
 
     public async Task<IListResult<List<DrugGetDto>>> GetAllDrugByCategoryId(int drugCategoryId,
@@ -467,9 +476,8 @@ public class DrugService : IDrugService, IDrugCategoryService, IScopedDependency
 
         return new SuccessDataResult<DrugDetailDto>(drugDetail);
     }
-    
-    
-    
+
+
     public class PersianComparer : IComparer<string>
     {
         public int Compare(string x, string y)
@@ -478,5 +486,4 @@ public class DrugService : IDrugService, IDrugCategoryService, IScopedDependency
             return string.Compare(x, y, cultureInfo, CompareOptions.None);
         }
     }
-    
 }
