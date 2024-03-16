@@ -1,4 +1,5 @@
-﻿using Mapster;
+﻿using System.Globalization;
+using Mapster;
 using MedPedia.Common.Abstracts;
 using MedPedia.Common.Utilities.Enums;
 using MedPedia.Common.Utilities.Results;
@@ -74,6 +75,7 @@ public class DrugService : IDrugService, IDrugCategoryService, IScopedDependency
                 Brand = drug.Brand,
                 ImageId = drug.ImageId
             })
+            .OrderBy(drugDto => drugDto.FaTitle, new PersianComparer())
             .ToList();
         return new SuccessListResult<List<DrugGetDto>>(drugsDto);
     }
@@ -467,5 +469,14 @@ public class DrugService : IDrugService, IDrugCategoryService, IScopedDependency
     }
     
     
+    
+    public class PersianComparer : IComparer<string>
+    {
+        public int Compare(string x, string y)
+        {
+            var cultureInfo = new CultureInfo("fa-IR");
+            return string.Compare(x, y, cultureInfo, CompareOptions.None);
+        }
+    }
     
 }
