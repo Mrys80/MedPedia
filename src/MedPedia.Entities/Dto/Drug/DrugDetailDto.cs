@@ -35,5 +35,5 @@ public class DrugDetailDto : IDto
     public string UseInBreastfeedingAndChildren { get; set; }
     public string Education { get; set; }
     public List<PharmaceuticalFormsGetDto> forms { get; set; }
-    public List<SideEffectGetDto> sideEffects { get; set; }
+    public string sideEffects { get; set; }
 }

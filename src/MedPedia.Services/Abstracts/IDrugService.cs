@@ -13,7 +13,7 @@ namespace MedPedia.Services.Abstracts;
 
 public interface IDrugService
 {
-    Task<IListResult<List<DrugGetDto>>> GetAllDrug(BaseGetDto baseGetDto,CancellationToken cancellationToken);
+    Task<IListResult<List<DrugGetDto>>> GetAllDrug(BaseGetDto baseGetDto, CancellationToken cancellationToken);
     Task<IListResult<List<DrugGetDto>>> GetAllDrugByCategoryId(int drugCategoryId, CancellationToken cancellationToken);
 
     Task<IDataResult<DrugGetDto>> AddDrug(CurrentUserDto currentUser, DrugAddDto drugAddDto,
@@ -24,7 +24,6 @@ public interface IDrugService
     Task<IListResult<List<ClassificationOfPregnancyGetDto>>> GetAllPregnancyClassification(
         CancellationToken cancellationToken);
 
-    Task<IListResult<List<IndicationsGetDto>>> GetAllIndications(CancellationToken cancellationToken);
     Task<IListResult<List<MartindaleGetDto>>> GetAllMartindale(CancellationToken cancellationToken);
     Task<IListResult<List<MethodOfUseGetDto>>> GetAllMethodOfUse(CancellationToken cancellationToken);
     Task<IListResult<List<PharmaceuticalFormsGetDto>>> GetAllPharmaceuticalForms(CancellationToken cancellationToken);
@@ -32,7 +31,6 @@ public interface IDrugService
     Task<IListResult<List<PharmaceuticalFormsGetDto>>> GetAllPharmacologicalClassification(
         CancellationToken cancellationToken);
 
-    Task<IListResult<List<SideEffectGetDto>>> GetAllSideEffect(CancellationToken cancellationToken);
 
     Task<IListResult<List<TherapeuticClassificationGetDto>>> GetAllTherapeuticClassification(
         CancellationToken cancellationToken);

@@ -10,7 +10,8 @@ public class DrugInformation : BaseEntity
     public int MartindaleClassificationId { get; set; }
     public int PregnancyClassificationId { get; set; }
     public int MethodOfUseId { get; set; }
-    public int IndicationId { get; set; }
+    public string Indication { get; set; }
+    public string SideEffect { get; set; }
     public string MechanismOfEffect { get; set; }
     public string BeginningOfEffect { get; set; }
     public string PeakOfEffect { get; set; }

@@ -25,41 +25,34 @@ public class DrugService : IDrugService, IDrugCategoryService, IScopedDependency
     private readonly IRepository<Drug> _drugRepository;
     private readonly IRepository<DrugCategory> _drugCategoryRepository;
     private readonly IRepository<ClassificationOfPregnancy> _classificationOfPregnancyRepository;
-    private readonly IRepository<Indications> _indicationsRepository;
     private readonly IRepository<MartindaleClassification> _martindaleRepository;
     private readonly IRepository<MethodOfUse> _methodOfUseRepository;
     private readonly IRepository<PharmaceuticalForms> _pharmaceuticalFormsRepository;
     private readonly IRepository<PharmacologicalClassification> _pharmacologicalClassificationRepository;
-    private readonly IRepository<SideEffect> _sideEffectRepository;
     private readonly IRepository<TherapeuticClassification> _therapeuticClassificationRepository;
     private readonly IRepository<DrugInformation> _drugInformationRepository;
     private readonly IRepository<DrugForms> _drugFormRepository;
-    private readonly IRepository<DrugSideEffect> _drugSideEffectRepository;
 
 
     public DrugService(IRepository<Drug> drugRepository, IRepository<DrugCategory> drugCategoryRepository,
         IRepository<ClassificationOfPregnancy> classificationOfPregnancyRepository,
-        IRepository<MartindaleClassification> martindaleRepository, IRepository<MethodOfUse> methodOfUseRepository,
-        IRepository<Indications> indicationsRepository, IRepository<PharmaceuticalForms> pharmaceuticalFormsRepository,
+        IRepository<MartindaleClassification> martindaleRepository, IRepository<MethodOfUse> methodOfUseRepository, 
+        IRepository<PharmaceuticalForms> pharmaceuticalFormsRepository,
         IRepository<PharmacologicalClassification> pharmacologicalClassificationRepository,
-        IRepository<SideEffect> sideEffectRepository,
         IRepository<TherapeuticClassification> therapeuticClassificationRepository,
-        IRepository<DrugInformation> drugInformationRepository, IRepository<DrugForms> drugFormRepository,
-        IRepository<DrugSideEffect> drugSideEffectRepository)
+        IRepository<DrugInformation> drugInformationRepository, IRepository<DrugForms> drugFormRepository
+        )
     {
         _drugRepository = drugRepository;
         _drugCategoryRepository = drugCategoryRepository;
         _classificationOfPregnancyRepository = classificationOfPregnancyRepository;
         _martindaleRepository = martindaleRepository;
         _methodOfUseRepository = methodOfUseRepository;
-        _indicationsRepository = indicationsRepository;
         _pharmaceuticalFormsRepository = pharmaceuticalFormsRepository;
         _pharmacologicalClassificationRepository = pharmacologicalClassificationRepository;
-        _sideEffectRepository = sideEffectRepository;
         _therapeuticClassificationRepository = therapeuticClassificationRepository;
         _drugInformationRepository = drugInformationRepository;
         _drugFormRepository = drugFormRepository;
-        _drugSideEffectRepository = drugSideEffectRepository;
     }
 
     public async Task<IListResult<List<DrugGetDto>>> GetAllDrug(
@@ -225,24 +218,6 @@ public class DrugService : IDrugService, IDrugCategoryService, IScopedDependency
         return new SuccessListResult<List<ClassificationOfPregnancyGetDto>>(pregnanciesDto);
     }
 
-    public async Task<IListResult<List<IndicationsGetDto>>> GetAllIndications(CancellationToken cancellationToken)
-    {
-        var indications = await _indicationsRepository
-            .GetListAsync
-            (
-                x =>
-                    x.IsDeleted == false,
-                cancellationToken
-            );
-
-        var indicationsDto = indications.Select(x => new IndicationsGetDto
-        {
-            Id = x.Id,
-            Title = x.Title
-        }).ToList();
-
-        return new SuccessListResult<List<IndicationsGetDto>>(indicationsDto);
-    }
 
     public async Task<IListResult<List<MartindaleGetDto>>> GetAllMartindale(CancellationToken cancellationToken)
     {
@@ -324,24 +299,6 @@ public class DrugService : IDrugService, IDrugCategoryService, IScopedDependency
         return new SuccessListResult<List<PharmaceuticalFormsGetDto>>(pharmacologicalClassificationDto);
     }
 
-    public async Task<IListResult<List<SideEffectGetDto>>> GetAllSideEffect(CancellationToken cancellationToken)
-    {
-        var sideEffects = await _sideEffectRepository
-            .GetListAsync
-            (
-                x =>
-                    x.IsDeleted == false,
-                cancellationToken
-            );
-
-        var sideEffectsDto = sideEffects.Select(x => new SideEffectGetDto
-        {
-            Id = x.Id,
-            Title = x.Title
-        }).ToList();
-
-        return new SuccessListResult<List<SideEffectGetDto>>(sideEffectsDto);
-    }
 
     public async Task<IListResult<List<TherapeuticClassificationGetDto>>> GetAllTherapeuticClassification(
         CancellationToken cancellationToken)
@@ -381,8 +338,6 @@ public class DrugService : IDrugService, IDrugCategoryService, IScopedDependency
                 .PregnancyClassificationId equals pregnancyClassification.Id
             join methodOfUse in _methodOfUseRepository.TableNoTracking on drugInformation.MethodOfUseId equals
                 methodOfUse.Id
-            join indication in _indicationsRepository.TableNoTracking on drugInformation.IndicationId equals indication
-                .Id
             where
                 drug.Id == drugId &&
                 drug.IsDeleted == false &&
@@ -392,8 +347,7 @@ public class DrugService : IDrugService, IDrugCategoryService, IScopedDependency
                 therapeuticClassification.IsDeleted == false &&
                 martindaleClassification.IsDeleted == false &&
                 pregnancyClassification.IsDeleted == false &&
-                methodOfUse.IsDeleted == false &&
-                indication.IsDeleted == false
+                methodOfUse.IsDeleted == false
             select new DrugDetailDto
             {
                 FaTitle = drug.FaTitle,
@@ -406,7 +360,8 @@ public class DrugService : IDrugService, IDrugCategoryService, IScopedDependency
                 MartindaleClassification = martindaleClassification.Title,
                 PregnancyClassification = pregnancyClassification.Title,
                 MethodOfUse = methodOfUse.Title,
-                Indication = indication.Title,
+                Indication = drugInformation.Indication,
+                sideEffects = drugInformation.SideEffect,
                 MechanismOfEffect = drugInformation.MechanismOfEffect,
                 BeginningOfEffect = drugInformation.BeginningOfEffect,
                 PeakOfEffect = drugInformation.PeakOfEffect,
@@ -451,26 +406,6 @@ public class DrugService : IDrugService, IDrugCategoryService, IScopedDependency
             ).ToListAsync(cancellationToken);
 
 
-        var sideEffects =
-            await
-            (
-                from drugSideEffect in _drugSideEffectRepository.TableNoTracking
-                join sideEffect in _sideEffectRepository.TableNoTracking on drugSideEffect
-                    .SideEffectId equals sideEffect.Id
-                where
-                    drugSideEffect.DrugId == drugId &&
-                    drugSideEffect.IsDeleted == false &&
-                    sideEffect.IsDeleted == false
-                select new SideEffectGetDto
-                {
-                    Id = sideEffect.Id,
-                    Title = sideEffect.Title,
-                    Description = sideEffect.Description,
-                }
-            ).ToListAsync(cancellationToken);
-
-
-        drugDetail.sideEffects = sideEffects;
         drugDetail.forms = forms;
 
 
