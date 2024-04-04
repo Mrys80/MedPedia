@@ -24,11 +24,10 @@ public class DrugController : BaseController
 
     [HttpGet("[action]")]
     public async Task<IActionResult> GetAllDrug(
-        [FromBody] BaseGetDto baseGetDto,
         CancellationToken cancellationToken)
     {
         var result =
-            await _drugService.GetAllDrug(baseGetDto, cancellationToken);
+            await _drugService.GetAllDrug(cancellationToken);
 
         if (!result.IsSuccess)
             return BadRequest(result);

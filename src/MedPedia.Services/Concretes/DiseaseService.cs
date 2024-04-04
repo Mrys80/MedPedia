@@ -27,10 +27,19 @@ public class DiseaseService : IDiseaseService, IDiseaseCategoryService, IScopedD
     {
         var diseases = await _diseaseRepository
             .GetListAsync(disease => disease.IsDeleted == false, cancellationToken);
-        var diseasesDto = diseases.Select(disease => new DiseaseGetDto
-                { Id = disease.Id, Title = disease.Title, ImageId = disease.ImageId })
+
+        var sortedDiseases = diseases
+            .Select(disease => new DiseaseGetDto
+            {
+                Id = disease.Id,
+                Title = disease.Title,
+                ImageId = disease.ImageId
+            })
+            .OrderBy(diseaseDto => diseaseDto.Title, new DrugService.PersianComparer())
             .ToList();
-        return new SuccessListResult<List<DiseaseGetDto>>(diseasesDto);
+
+
+        return new SuccessListResult<List<DiseaseGetDto>>(sortedDiseases);
     }
 
     public async Task<IListResult<List<DiseaseGetDto>>> GetAllDiseaseByCategoryId(int diseaseCategoryId,

@@ -27,10 +27,18 @@ public class PrescriptionService : IPrescriptionService, IClassificationService,
         var prescriptions = await _prescriptionRepository
             .GetListAsync(prescription => prescription.IsDeleted == false, cancellationToken);
 
-        var prescriptionsDto = prescriptions.Select(prescription => new PrescriptionGetDto
-                { Id = prescription.Id, Title = prescription.Title, ImageId = prescription.ImageId })
+
+        var sortedPrescriptions = prescriptions
+            .Select(prescription => new PrescriptionGetDto
+            {
+                Id = prescription.Id,
+                Title = prescription.Title,
+                ImageId = prescription.ImageId
+            })
+            .OrderBy(diseaseDto => diseaseDto.Title, new DrugService.PersianComparer())
             .ToList();
-        return new SuccessListResult<List<PrescriptionGetDto>>(prescriptionsDto);
+
+        return new SuccessListResult<List<PrescriptionGetDto>>(sortedPrescriptions);
     }
 
     public async Task<IListResult<List<PrescriptionGetDto>>> GetAllPrescriptionByClassificationId(int classificationId,

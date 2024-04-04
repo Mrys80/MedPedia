@@ -36,12 +36,12 @@ public class DrugService : IDrugService, IDrugCategoryService, IScopedDependency
 
     public DrugService(IRepository<Drug> drugRepository, IRepository<DrugCategory> drugCategoryRepository,
         IRepository<ClassificationOfPregnancy> classificationOfPregnancyRepository,
-        IRepository<MartindaleClassification> martindaleRepository, IRepository<MethodOfUse> methodOfUseRepository, 
+        IRepository<MartindaleClassification> martindaleRepository, IRepository<MethodOfUse> methodOfUseRepository,
         IRepository<PharmaceuticalForms> pharmaceuticalFormsRepository,
         IRepository<PharmacologicalClassification> pharmacologicalClassificationRepository,
         IRepository<TherapeuticClassification> therapeuticClassificationRepository,
         IRepository<DrugInformation> drugInformationRepository, IRepository<DrugForms> drugFormRepository
-        )
+    )
     {
         _drugRepository = drugRepository;
         _drugCategoryRepository = drugCategoryRepository;
@@ -56,7 +56,6 @@ public class DrugService : IDrugService, IDrugCategoryService, IScopedDependency
     }
 
     public async Task<IListResult<List<DrugGetDto>>> GetAllDrug(
-        BaseGetDto baseGetDto,
         CancellationToken cancellationToken)
     {
         var drugs = await _drugRepository
@@ -74,12 +73,8 @@ public class DrugService : IDrugService, IDrugCategoryService, IScopedDependency
             .OrderBy(drugDto => drugDto.FaTitle, new PersianComparer())
             .ToList();
 
-        var paginatedDrugs = sortedDrugs
-            .Skip(baseGetDto.Offset)
-            .Take(baseGetDto.Limit)
-            .ToList();
 
-        return new SuccessListResult<List<DrugGetDto>>(paginatedDrugs);
+        return new SuccessListResult<List<DrugGetDto>>(sortedDrugs);
     }
 
     public async Task<IListResult<List<DrugGetDto>>> GetAllDrugByCategoryId(int drugCategoryId,
