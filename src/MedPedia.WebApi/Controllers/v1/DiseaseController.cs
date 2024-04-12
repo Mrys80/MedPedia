@@ -54,7 +54,7 @@ public class DiseaseController : BaseController
 
     [HttpPost("[action]")]
     public async Task<IActionResult> AddDisease(
-        DiseaseAddDto diseaseAddDto, CancellationToken cancellationToken
+       [FromBody] DiseaseAddDto diseaseAddDto, CancellationToken cancellationToken
     )
     {
         var result =
@@ -83,7 +83,7 @@ public class DiseaseController : BaseController
 
     [HttpPost("[action]")]
     public async Task<IActionResult> AddDiseaseCategory(
-        DiseaseCategoryAddDto diseaseCategoryAddDto, CancellationToken cancellationToken
+        [FromBody]  DiseaseCategoryAddDto diseaseCategoryAddDto, CancellationToken cancellationToken
     )
     {
         var result =

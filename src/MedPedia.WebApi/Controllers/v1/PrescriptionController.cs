@@ -54,7 +54,7 @@ public class PrescriptionController : BaseController
 
     [HttpPost("[action]")]
     public async Task<IActionResult> AddPrescription(
-        PrescriptionAddDto prescriptionAddDto, CancellationToken cancellationToken
+        [FromBody] PrescriptionAddDto prescriptionAddDto, CancellationToken cancellationToken
     )
     {
         var result =
@@ -83,7 +83,7 @@ public class PrescriptionController : BaseController
 
     [HttpPost("[action]")]
     public async Task<IActionResult> AddClassification(
-        ClassificationAddDto classificationAddDto, CancellationToken cancellationToken
+        [FromBody]  ClassificationAddDto classificationAddDto, CancellationToken cancellationToken
     )
     {
         var result =

@@ -32,10 +32,27 @@ public class DiseaseService : IDiseaseService, IDiseaseCategoryService, IScopedD
             .Select(disease => new DiseaseGetDto
             {
                 Id = disease.Id,
-                Title = disease.Title,
-                ImageId = disease.ImageId
+                FaTitle = disease.FaTitle,
+                EnTitle = disease.EnTitle,
+                ImageId = disease.ImageId,
+                DefinitionOfDisease = disease.DefinitionOfDisease,
+                Signs = disease.Signs,
+                Cause = disease.Cause,
+                RiskFactors = disease.RiskFactors,
+                TransmissionWays = disease.TransmissionWays,
+                Complications = disease.Complications,
+                PreparingForVisit = disease.PreparingForVisit,
+                WhenVisit = disease.WhenVisit,
+                Recovery = disease.Recovery,
+                DiagnosticTests = disease.DiagnosticTests,
+                DrugTreatment = disease.DrugTreatment,
+                Treatment = disease.Treatment,
+                ChangeOfLifestyle = disease.ChangeOfLifestyle,
+                ImportantPoints = disease.ImportantPoints,
+                BasicPointsOfTreatment = disease.BasicPointsOfTreatment,
+                Prevention = disease.Prevention
             })
-            .OrderBy(diseaseDto => diseaseDto.Title, new DrugService.PersianComparer())
+            .OrderBy(diseaseDto => diseaseDto.FaTitle, new DrugService.PersianComparer())
             .ToList();
 
 
@@ -52,7 +69,28 @@ public class DiseaseService : IDiseaseService, IDiseaseCategoryService, IScopedD
                     disease.IsDeleted == false,
                 cancellationToken);
         var diseasesDto = diseases.Select(disease => new DiseaseGetDto
-                { Id = disease.Id, Title = disease.Title, ImageId = disease.ImageId })
+            {
+                Id = disease.Id,
+                FaTitle = disease.FaTitle,
+                EnTitle = disease.EnTitle,
+                ImageId = disease.ImageId,
+                DefinitionOfDisease = disease.DefinitionOfDisease,
+                Signs = disease.Signs,
+                Cause = disease.Cause,
+                RiskFactors = disease.RiskFactors,
+                TransmissionWays = disease.TransmissionWays,
+                Complications = disease.Complications,
+                PreparingForVisit = disease.PreparingForVisit,
+                WhenVisit = disease.WhenVisit,
+                Recovery = disease.Recovery,
+                DiagnosticTests = disease.DiagnosticTests,
+                DrugTreatment = disease.DrugTreatment,
+                Treatment = disease.Treatment,
+                ChangeOfLifestyle = disease.ChangeOfLifestyle,
+                ImportantPoints = disease.ImportantPoints,
+                BasicPointsOfTreatment = disease.BasicPointsOfTreatment,
+                Prevention = disease.Prevention
+            })
             .ToList();
         return new SuccessListResult<List<DiseaseGetDto>>(diseasesDto);
     }
@@ -62,8 +100,25 @@ public class DiseaseService : IDiseaseService, IDiseaseCategoryService, IScopedD
     {
         var disease = new Disease
         {
-            Title = diseaseAddDto.Title,
+            FaTitle = diseaseAddDto.FaTitle,
+            EnTitle = diseaseAddDto.EnTitle,
             ImageId = diseaseAddDto.ImageId,
+            DefinitionOfDisease = diseaseAddDto.DefinitionOfDisease,
+            Signs = diseaseAddDto.Signs,
+            Cause = diseaseAddDto.Cause,
+            RiskFactors = diseaseAddDto.RiskFactors,
+            TransmissionWays = diseaseAddDto.TransmissionWays,
+            Complications = diseaseAddDto.Complications,
+            PreparingForVisit = diseaseAddDto.PreparingForVisit,
+            WhenVisit = diseaseAddDto.WhenVisit,
+            Recovery = diseaseAddDto.Recovery,
+            DiagnosticTests = diseaseAddDto.DiagnosticTests,
+            DrugTreatment = diseaseAddDto.DrugTreatment,
+            Treatment = diseaseAddDto.Treatment,
+            ChangeOfLifestyle = diseaseAddDto.ChangeOfLifestyle,
+            ImportantPoints = diseaseAddDto.ImportantPoints,
+            BasicPointsOfTreatment = diseaseAddDto.BasicPointsOfTreatment,
+            Prevention = diseaseAddDto.Prevention,
             DiseaseCategoryId = diseaseAddDto.DiseaseCategoryId,
             RegUserId = currentUser.UserId,
             RegDate = DateTime.Now,
@@ -79,9 +134,30 @@ public class DiseaseService : IDiseaseService, IDiseaseCategoryService, IScopedD
     public async Task<IListResult<List<DiseaseGetDto>>> SearchDisease(string text, CancellationToken cancellationToken)
     {
         var diseases = await _diseaseRepository
-            .GetListAsync(disease => disease.IsDeleted == false && disease.Title.Contains(text), cancellationToken);
+            .GetListAsync(disease => disease.IsDeleted == false && disease.FaTitle.Contains(text), cancellationToken);
         var diseasesDto = diseases.Select(disease => new DiseaseGetDto
-                { Id = disease.Id, Title = disease.Title, ImageId = disease.ImageId })
+            {
+                Id = disease.Id,
+                FaTitle = disease.FaTitle,
+                EnTitle = disease.EnTitle,
+                ImageId = disease.ImageId,
+                DefinitionOfDisease = disease.DefinitionOfDisease,
+                Signs = disease.Signs,
+                Cause = disease.Cause,
+                RiskFactors = disease.RiskFactors,
+                TransmissionWays = disease.TransmissionWays,
+                Complications = disease.Complications,
+                PreparingForVisit = disease.PreparingForVisit,
+                WhenVisit = disease.WhenVisit,
+                Recovery = disease.Recovery,
+                DiagnosticTests = disease.DiagnosticTests,
+                DrugTreatment = disease.DrugTreatment,
+                Treatment = disease.Treatment,
+                ChangeOfLifestyle = disease.ChangeOfLifestyle,
+                ImportantPoints = disease.ImportantPoints,
+                BasicPointsOfTreatment = disease.BasicPointsOfTreatment,
+                Prevention = disease.Prevention
+            })
             .ToList();
         return new SuccessListResult<List<DiseaseGetDto>>(diseasesDto);
     }
