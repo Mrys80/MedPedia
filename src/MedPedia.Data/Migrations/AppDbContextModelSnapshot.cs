@@ -532,6 +532,71 @@ namespace Teb.Data.Migrations
 
                     SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"), 1L, 1);
 
+                    b.Property<string>("EnTitle")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<int>("ExperimentCategoryId")
+                        .HasColumnType("int");
+
+                    b.Property<string>("FaTitle")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("ImageId")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<bool>("IsDeleted")
+                        .HasColumnType("bit");
+
+                    b.Property<DateTime>("RegDate")
+                        .HasColumnType("datetime2");
+
+                    b.Property<int>("RegUserId")
+                        .HasColumnType("int");
+
+                    b.HasKey("Id");
+
+                    b.ToTable("Experiments", "dbo");
+                });
+
+            modelBuilder.Entity("MedPedia.Entities.Entities.ExperimentCategory", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"), 1L, 1);
+
+                    b.Property<string>("ImageId")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<bool>("IsDeleted")
+                        .HasColumnType("bit");
+
+                    b.Property<DateTime>("RegDate")
+                        .HasColumnType("datetime2");
+
+                    b.Property<int>("RegUserId")
+                        .HasColumnType("int");
+
+                    b.Property<string>("Title")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.HasKey("Id");
+
+                    b.ToTable("ExperimentCategories", "dbo");
+                });
+
+            modelBuilder.Entity("MedPedia.Entities.Entities.ExperimentInformation", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"), 1L, 1);
+
                     b.Property<string>("Abbreviation")
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
@@ -548,19 +613,8 @@ namespace Teb.Data.Migrations
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<string>("EnTitle")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<int>("ExperimentCategoryId")
+                    b.Property<int>("ExperimentId")
                         .HasColumnType("int");
-
-                    b.Property<string>("FaTitle")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<string>("ImageId")
-                        .HasColumnType("nvarchar(max)");
 
                     b.Property<string>("InterferingFactors")
                         .IsRequired()
@@ -613,36 +667,7 @@ namespace Teb.Data.Migrations
 
                     b.HasKey("Id");
 
-                    b.ToTable("Experiments", "dbo");
-                });
-
-            modelBuilder.Entity("MedPedia.Entities.Entities.ExperimentCategory", b =>
-                {
-                    b.Property<int>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("int");
-
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"), 1L, 1);
-
-                    b.Property<string>("ImageId")
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<bool>("IsDeleted")
-                        .HasColumnType("bit");
-
-                    b.Property<DateTime>("RegDate")
-                        .HasColumnType("datetime2");
-
-                    b.Property<int>("RegUserId")
-                        .HasColumnType("int");
-
-                    b.Property<string>("Title")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
-
-                    b.HasKey("Id");
-
-                    b.ToTable("ExperimentCategories", "dbo");
+                    b.ToTable("ExperimentInformations", "dbo");
                 });
 
             modelBuilder.Entity("MedPedia.Entities.Entities.MartindaleClassification", b =>
