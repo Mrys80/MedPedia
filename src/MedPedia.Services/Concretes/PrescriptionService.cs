@@ -91,8 +91,8 @@ public class PrescriptionService : IPrescriptionService, IClassificationService,
 
     public async Task<IListResult<List<ClassificationGetDto>>> GetAllClassification(CancellationToken cancellationToken)
     {
-        var classifications = await _prescriptionRepository
-            .GetListAsync(prescription => prescription.IsDeleted == false, cancellationToken);
+        var classifications = await _classificationRepository
+            .GetListAsync(classification => classification.IsDeleted == false, cancellationToken);
 
         var classificationsDto = classifications.Select(classification => new ClassificationGetDto
                 { Id = classification.Id, Title = classification.Title, ImageId = classification.ImageId })
