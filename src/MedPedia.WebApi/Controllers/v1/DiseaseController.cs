@@ -54,7 +54,7 @@ public class DiseaseController : BaseController
 
     [HttpPost("[action]")]
     public async Task<IActionResult> AddDisease(
-       [FromBody] DiseaseAddDto diseaseAddDto, CancellationToken cancellationToken
+        [FromBody] DiseaseAddDto diseaseAddDto, CancellationToken cancellationToken
     )
     {
         var result =
@@ -83,7 +83,7 @@ public class DiseaseController : BaseController
 
     [HttpPost("[action]")]
     public async Task<IActionResult> AddDiseaseCategory(
-        [FromBody]  DiseaseCategoryAddDto diseaseCategoryAddDto, CancellationToken cancellationToken
+        [FromBody] DiseaseCategoryAddDto diseaseCategoryAddDto, CancellationToken cancellationToken
     )
     {
         var result =
@@ -99,7 +99,7 @@ public class DiseaseController : BaseController
 
 
     [HttpGet("[action]")]
-    public async Task<IActionResult> SearchDisease([FromQuery]string text, CancellationToken cancellationToken)
+    public async Task<IActionResult> SearchDisease([FromQuery] string text, CancellationToken cancellationToken)
     {
         if (string.IsNullOrWhiteSpace(text))
         {
@@ -115,7 +115,7 @@ public class DiseaseController : BaseController
     }
 
     [HttpGet("[action]")]
-    public async Task<IActionResult> SearchDiseaseCategory([FromQuery]string text, CancellationToken cancellationToken)
+    public async Task<IActionResult> SearchDiseaseCategory([FromQuery] string text, CancellationToken cancellationToken)
     {
         if (string.IsNullOrWhiteSpace(text))
         {
@@ -123,6 +123,20 @@ public class DiseaseController : BaseController
         }
 
         var result = await _diseaseCategoryService.SearchDiseaseCategory(text, cancellationToken);
+
+        if (!result.IsSuccess)
+            return BadRequest(result);
+
+        return Ok(result);
+    }
+
+
+    [HttpGet("[action]/{diseaseId:int}")]
+    public async Task<IActionResult> GetDiseaseInfo(
+        int diseaseId, CancellationToken cancellationToken)
+    {
+        var result =
+            await _diseaseService.GetDiseaseInfo(diseaseId, cancellationToken);
 
         if (!result.IsSuccess)
             return BadRequest(result);

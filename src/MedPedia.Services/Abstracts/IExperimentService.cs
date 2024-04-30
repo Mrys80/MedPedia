@@ -32,4 +32,8 @@ public interface IExperimentService
     Task<IDataResult<ExperimentCategoryGetDto>> AddExperimentCategory(
         CurrentUserDto currentUser, ExperimentCategoryAddDto experimentCategoryAddDto,
         CancellationToken cancellationToken);
+    
+    
+    Task<IDataResult<ExperimentDetailDto>> GetExperimentInfo(int diseaseId,
+        CancellationToken cancellationToken);
 }

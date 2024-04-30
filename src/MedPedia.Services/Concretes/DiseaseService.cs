@@ -14,13 +14,16 @@ public class DiseaseService : IDiseaseService, IDiseaseCategoryService, IScopedD
 {
     private readonly IRepository<Disease> _diseaseRepository;
     private readonly IRepository<DiseaseCategory> _diseaseCategoryRepository;
+    private readonly IRepository<DiseaseInformation> _diseaseInformationRepository;
 
 
     public DiseaseService(IRepository<Disease> diseaseRepository,
-        IRepository<DiseaseCategory> diseaseCategoryRepository)
+        IRepository<DiseaseCategory> diseaseCategoryRepository,
+        IRepository<DiseaseInformation> diseaseInformationRepository)
     {
         _diseaseRepository = diseaseRepository;
         _diseaseCategoryRepository = diseaseCategoryRepository;
+        _diseaseInformationRepository = diseaseInformationRepository;
     }
 
     public async Task<IListResult<List<DiseaseGetDto>>> GetAllDisease(CancellationToken cancellationToken)
@@ -35,22 +38,6 @@ public class DiseaseService : IDiseaseService, IDiseaseCategoryService, IScopedD
                 FaTitle = disease.FaTitle,
                 EnTitle = disease.EnTitle,
                 ImageId = disease.ImageId,
-                // DefinitionOfDisease = disease.DefinitionOfDisease,
-                // Signs = disease.Signs,
-                // Cause = disease.Cause,
-                // RiskFactors = disease.RiskFactors,
-                // TransmissionWays = disease.TransmissionWays,
-                // Complications = disease.Complications,
-                // PreparingForVisit = disease.PreparingForVisit,
-                // WhenVisit = disease.WhenVisit,
-                // Recovery = disease.Recovery,
-                // DiagnosticTests = disease.DiagnosticTests,
-                // DrugTreatment = disease.DrugTreatment,
-                // Treatment = disease.Treatment,
-                // ChangeOfLifestyle = disease.ChangeOfLifestyle,
-                // ImportantPoints = disease.ImportantPoints,
-                // BasicPointsOfTreatment = disease.BasicPointsOfTreatment,
-                // Prevention = disease.Prevention
             })
             .OrderBy(diseaseDto => diseaseDto.FaTitle, new DrugService.PersianComparer())
             .ToList();
@@ -74,22 +61,6 @@ public class DiseaseService : IDiseaseService, IDiseaseCategoryService, IScopedD
                 FaTitle = disease.FaTitle,
                 EnTitle = disease.EnTitle,
                 ImageId = disease.ImageId,
-                // DefinitionOfDisease = disease.DefinitionOfDisease,
-                // Signs = disease.Signs,
-                // Cause = disease.Cause,
-                // RiskFactors = disease.RiskFactors,
-                // TransmissionWays = disease.TransmissionWays,
-                // Complications = disease.Complications,
-                // PreparingForVisit = disease.PreparingForVisit,
-                // WhenVisit = disease.WhenVisit,
-                // Recovery = disease.Recovery,
-                // DiagnosticTests = disease.DiagnosticTests,
-                // DrugTreatment = disease.DrugTreatment,
-                // Treatment = disease.Treatment,
-                // ChangeOfLifestyle = disease.ChangeOfLifestyle,
-                // ImportantPoints = disease.ImportantPoints,
-                // BasicPointsOfTreatment = disease.BasicPointsOfTreatment,
-                // Prevention = disease.Prevention
             })
             .ToList();
         return new SuccessListResult<List<DiseaseGetDto>>(diseasesDto);
@@ -103,22 +74,6 @@ public class DiseaseService : IDiseaseService, IDiseaseCategoryService, IScopedD
             FaTitle = diseaseAddDto.FaTitle,
             EnTitle = diseaseAddDto.EnTitle,
             ImageId = diseaseAddDto.ImageId,
-            // DefinitionOfDisease = diseaseAddDto.DefinitionOfDisease,
-            // Signs = diseaseAddDto.Signs,
-            // Cause = diseaseAddDto.Cause,
-            // RiskFactors = diseaseAddDto.RiskFactors,
-            // TransmissionWays = diseaseAddDto.TransmissionWays,
-            // Complications = diseaseAddDto.Complications,
-            // PreparingForVisit = diseaseAddDto.PreparingForVisit,
-            // WhenVisit = diseaseAddDto.WhenVisit,
-            // Recovery = diseaseAddDto.Recovery,
-            // DiagnosticTests = diseaseAddDto.DiagnosticTests,
-            // DrugTreatment = diseaseAddDto.DrugTreatment,
-            // Treatment = diseaseAddDto.Treatment,
-            // ChangeOfLifestyle = diseaseAddDto.ChangeOfLifestyle,
-            // ImportantPoints = diseaseAddDto.ImportantPoints,
-            // BasicPointsOfTreatment = diseaseAddDto.BasicPointsOfTreatment,
-            // Prevention = diseaseAddDto.Prevention,
             DiseaseCategoryId = diseaseAddDto.DiseaseCategoryId,
             RegUserId = currentUser.UserId,
             RegDate = DateTime.Now,
@@ -141,25 +96,21 @@ public class DiseaseService : IDiseaseService, IDiseaseCategoryService, IScopedD
                 FaTitle = disease.FaTitle,
                 EnTitle = disease.EnTitle,
                 ImageId = disease.ImageId,
-                // DefinitionOfDisease = disease.DefinitionOfDisease,
-                // Signs = disease.Signs,
-                // Cause = disease.Cause,
-                // RiskFactors = disease.RiskFactors,
-                // TransmissionWays = disease.TransmissionWays,
-                // Complications = disease.Complications,
-                // PreparingForVisit = disease.PreparingForVisit,
-                // WhenVisit = disease.WhenVisit,
-                // Recovery = disease.Recovery,
-                // DiagnosticTests = disease.DiagnosticTests,
-                // DrugTreatment = disease.DrugTreatment,
-                // Treatment = disease.Treatment,
-                // ChangeOfLifestyle = disease.ChangeOfLifestyle,
-                // ImportantPoints = disease.ImportantPoints,
-                // BasicPointsOfTreatment = disease.BasicPointsOfTreatment,
-                // Prevention = disease.Prevention
             })
             .ToList();
         return new SuccessListResult<List<DiseaseGetDto>>(diseasesDto);
+    }
+
+    public async Task<IDataResult<DiseaseInfo>> GetDiseaseInfo(int diseaseId, CancellationToken cancellationToken)
+    {
+        var diseaseInfo = await _diseaseInformationRepository
+            .GetAsync(
+                x => x.DiseaseId == diseaseId,
+                cancellationToken
+            );
+
+        var diseaseInfoDto = diseaseInfo.Adapt<DiseaseInfo>();
+        return new SuccessDataResult<DiseaseInfo>(diseaseInfoDto);
     }
 
 

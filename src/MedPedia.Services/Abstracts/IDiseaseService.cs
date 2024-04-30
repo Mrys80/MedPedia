@@ -20,9 +20,12 @@ public interface IDiseaseService
         DiseaseAddDto diseaseAddDto,
         CancellationToken cancellationToken
     );
-    
+
     Task<IListResult<List<DiseaseGetDto>>> SearchDisease(
-        string text,  CancellationToken cancellationToken
+        string text, CancellationToken cancellationToken
     );
-    
+
+
+    Task<IDataResult<DiseaseInfo>> GetDiseaseInfo(int diseaseId,
+        CancellationToken cancellationToken);
 }

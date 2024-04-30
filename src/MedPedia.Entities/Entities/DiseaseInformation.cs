@@ -5,7 +5,6 @@ namespace MedPedia.Entities.Entities;
 public class DiseaseInformation:BaseEntity
 {
     public int DiseaseId { get; set; }
-
     public string DefinitionOfDisease { get; set; }
     public string Signs { get; set; }
     public string Cause { get; set; }

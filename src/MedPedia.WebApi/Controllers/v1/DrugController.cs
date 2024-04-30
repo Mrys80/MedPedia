@@ -83,7 +83,7 @@ public class DrugController : BaseController
 
     [HttpPost("[action]")]
     public async Task<IActionResult> AddDrugCategories(
-        [FromBody]  DrugCategoryAddDto drugCategoryAddDto, CancellationToken cancellationToken
+        [FromBody] DrugCategoryAddDto drugCategoryAddDto, CancellationToken cancellationToken
     )
     {
         var result =
@@ -123,6 +123,18 @@ public class DrugController : BaseController
         }
 
         var result = await _drugCategoryService.SearchDrugCategories(text, cancellationToken);
+
+        if (!result.IsSuccess)
+            return BadRequest(result);
+
+        return Ok(result);
+    }
+
+
+    [HttpGet("[action]/{drugId:int}")]
+    public async Task<IActionResult> GetDrugDetail(int drugId, CancellationToken cancellationToken)
+    {
+        var result = await _drugService.GetDrugDetail(drugId, cancellationToken);
 
         if (!result.IsSuccess)
             return BadRequest(result);

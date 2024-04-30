@@ -12,6 +12,8 @@ public interface IDiseaseCategoryService
 
     Task<IListResult<List<DiseaseCategoryGetDto>>>SearchDiseaseCategory(
         string text,  CancellationToken cancellationToken);
+    
+    
     Task<IDataResult<DiseaseCategoryGetDto>> AddDiseaseCategory(
         CurrentUserDto currentUser, DiseaseCategoryAddDto diseaseCategoryAddDto, CancellationToken cancellationToken);
 }
