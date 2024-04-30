@@ -66,8 +66,8 @@ public class ExperimentController : BaseController
 
         return Ok(result);
     }
-    
-    
+
+
     [HttpGet("[action]")]
     public async Task<IActionResult> GetAllExperimentCategory(
         CancellationToken cancellationToken)
@@ -90,6 +90,19 @@ public class ExperimentController : BaseController
             await _experimentService.AddExperimentCategory(
                 CurrentUser, experimentCategoryAddDto, cancellationToken
             );
+
+        if (!result.IsSuccess)
+            return BadRequest(result);
+
+        return Ok(result);
+    }
+
+    [HttpGet("[action]/{experimentId:int}")]
+    public async Task<IActionResult> GetExperimentInfo(
+        int experimentId, CancellationToken cancellationToken)
+    {
+        var result =
+            await _experimentService.GetExperimentInfo(experimentId, cancellationToken);
 
         if (!result.IsSuccess)
             return BadRequest(result);

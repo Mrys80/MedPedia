@@ -143,4 +143,18 @@ public class DiseaseController : BaseController
 
         return Ok(result);
     }
+    
+    
+    [HttpGet("[action]/{DiseaseId:int}")]
+    public async Task<IActionResult> GetExperimentInfo(
+        int DiseaseId, CancellationToken cancellationToken)
+    {
+        var result =
+            await _diseaseService.GetDiseaseInfo(DiseaseId, cancellationToken);
+
+        if (!result.IsSuccess)
+            return BadRequest(result);
+
+        return Ok(result);
+    }
 }
