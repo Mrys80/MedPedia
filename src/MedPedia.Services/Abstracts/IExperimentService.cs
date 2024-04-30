@@ -34,6 +34,6 @@ public interface IExperimentService
         CancellationToken cancellationToken);
     
     
-    Task<IDataResult<ExperimentDetailDto>> GetExperimentInfo(int diseaseId,
+    Task<IDataResult<ExperimentDetailDto>> GetExperimentInfo(int experimentId,
         CancellationToken cancellationToken);
 }

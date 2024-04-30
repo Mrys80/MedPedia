@@ -15,12 +15,15 @@ public class ExperimentService : IExperimentService, IScopedDependency
 {
     private readonly IRepository<Experiment> _experimentRepository;
     private readonly IRepository<ExperimentCategory> _experimentCategoryRepository;
+    private readonly IRepository<ExperimentInformation> _experimentInformationRepository;
 
     public ExperimentService(IRepository<ExperimentCategory> experimentCategoryRepository,
-        IRepository<Experiment> experimentRepository)
+        IRepository<Experiment> experimentRepository,
+        IRepository<ExperimentInformation> experimentInformationRepository)
     {
         _experimentCategoryRepository = experimentCategoryRepository;
         _experimentRepository = experimentRepository;
+        _experimentInformationRepository = experimentInformationRepository;
     }
 
 
@@ -139,7 +142,7 @@ public class ExperimentService : IExperimentService, IScopedDependency
         return new SuccessListResult<List<ExperimentCategoryGetDto>>(experimentCategoriesDto);
     }
 
-  
+
     public async Task<IDataResult<ExperimentCategoryGetDto>> AddExperimentCategory(CurrentUserDto currentUser,
         ExperimentCategoryAddDto experimentCategoryAddDto,
         CancellationToken cancellationToken)
@@ -157,6 +160,19 @@ public class ExperimentService : IExperimentService, IScopedDependency
 
         var experimentCategoryDto = experimentCategory.Adapt<ExperimentCategoryGetDto>();
         return new SuccessDataResult<ExperimentCategoryGetDto>(experimentCategoryDto);
+    }
+
+    public async Task<IDataResult<ExperimentDetailDto>> GetExperimentInfo(int experimentId,
+        CancellationToken cancellationToken)
+    {
+        var experimentInfo = await _experimentInformationRepository
+            .GetAsync(
+                x => x.Id == experimentId,
+                cancellationToken
+            );
+
+        var experimentInfoDto = experimentInfo.Adapt<ExperimentDetailDto>();
+        return new SuccessDataResult<ExperimentDetailDto>(experimentInfoDto);
     }
 
 
