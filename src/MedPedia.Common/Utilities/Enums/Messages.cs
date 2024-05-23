@@ -41,5 +41,8 @@ public enum Messages
     
     [Display(Name = nameof(WaitUntilSmsSend), Description = "لطفا تا زمان ارسال پیامک صبر کنید.")]
     WaitUntilSmsSend = 110,
+    
+    [Display(Name = nameof(SuccessFully), Description = "با موفقیت ذخیره شد.")]
+    SuccessFully = 1245,
 
 }
