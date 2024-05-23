@@ -8,8 +8,8 @@ public interface IQuizService
 {
     Task<IListResult<List<QuizTypeWithPercentageDto>>> GetAllQuizTypeWithPercentage(CancellationToken cancellationToken);
 
-    Task<IListResult<List<QuizCategoryDto>>> GetAllQuizCategories(CancellationToken cancellationToken);
-    Task<IListResult<List<QuizDto>>> GetAllQuiz(CancellationToken cancellationToken);
+    Task<IListResult<List<QuizCategoryDto>>> GetAllQuizCategories(int quizTypeId,CancellationToken cancellationToken);
+    Task<IListResult<List<QuizDto>>> GetAllQuiz(int quizCategoryId,CancellationToken cancellationToken);
 
     Task<IListResult<List<QuestionDto>>> GetQuestionsByQuizId(int quizId, CancellationToken cancellationToken);
     

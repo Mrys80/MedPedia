@@ -36,39 +36,59 @@ public class QuizService : IQuizService, IScopedDependency
     public async Task<IListResult<List<QuizTypeWithPercentageDto>>> GetAllQuizTypeWithPercentage(
         CancellationToken cancellationToken)
     {
-        var quizTypeWithPercentageList = await (
+        var data = await (
             from qt in _quizTypeRepository.TableNoTracking
-            join qc in _quizCategoryRepository.TableNoTracking on qt.Id equals qc.QuizTypeId
-            join q in _quizRepository.TableNoTracking on qc.Id equals q.QuizCategoryId
+            join qc in _quizCategoryRepository.TableNoTracking on qt.Id equals qc.QuizTypeId into qcGroup
+            from qc in qcGroup.DefaultIfEmpty()
+            join q in _quizRepository.TableNoTracking on qc.Id equals q.QuizCategoryId into qGroup
+            from q in qGroup.DefaultIfEmpty()
             join uq in _userQuizRepository.TableNoTracking on q.Id equals uq.QuizId into uqGroup
-            group new { qt, q, uqGroup } by new { qt.Id, qt.Title }
-            into g
-            select new QuizTypeWithPercentageDto
+            from uq in uqGroup.DefaultIfEmpty()
+            select new
             {
-                Id = g.Key.Id,
-                Title = g.Key.Title,
-                Percentage = !g.Any() ? 0 : (double)g.Sum(x => x.uqGroup.Any() ? 1 : 0) / g.Count() * 100
+                QuizTypeId = qt.Id,
+                QuizTypeTitle = qt.Title,
+                QuizId = q != null ? (int?)q.Id : null,
+                IsCompleted = uq != null
             }).ToListAsync(cancellationToken);
 
-        return new SuccessListResult<List<QuizTypeWithPercentageDto>>(quizTypeWithPercentageList);
+        var groupedData = data
+            .GroupBy(d => new { d.QuizTypeId, d.QuizTypeTitle })
+            .Select(g => new QuizTypeWithPercentageDto
+            {
+                Id = g.Key.QuizTypeId,
+                Title = g.Key.QuizTypeTitle,
+                Percentage = g.Key.QuizTypeId == 0 || g.Count(d => d.QuizId.HasValue) == 0
+                    ? 0
+                    : (double)g.Count(d => d.IsCompleted) / g.Count(d => d.QuizId.HasValue) * 100
+            }).ToList();
+
+
+        return new SuccessListResult<List<QuizTypeWithPercentageDto>>(groupedData);
     }
 
-    public async Task<IListResult<List<QuizCategoryDto>>> GetAllQuizCategories(CancellationToken cancellationToken)
+    public async Task<IListResult<List<QuizCategoryDto>>> GetAllQuizCategories(int quizTypeId,
+        CancellationToken cancellationToken)
     {
         var categories = await
-            _quizCategoryRepository.GetListAsync(x => x.IsDeleted == false, cancellationToken);
+            _quizCategoryRepository.GetListAsync(
+                x =>
+                    x.IsDeleted == false &&
+                    x.QuizTypeId == quizTypeId,
+                cancellationToken);
 
         var categoriesDtos = categories.Adapt<IEnumerable<QuizCategoryDto>>().ToList();
 
         return new SuccessListResult<List<QuizCategoryDto>>(categoriesDtos);
     }
 
-    public async Task<IListResult<List<QuizDto>>> GetAllQuiz(CancellationToken cancellationToken)
+    public async Task<IListResult<List<QuizDto>>> GetAllQuiz(int quizCategoryId, CancellationToken cancellationToken)
     {
         var quizDtos = await (
             from q in _quizRepository.TableNoTracking
             join uq in _userQuizRepository.TableNoTracking on q.Id equals uq.QuizId into gj
             from uq in gj.DefaultIfEmpty()
+            where q.QuizCategoryId == quizCategoryId
             select new QuizDto
             {
                 Id = q.Id,
@@ -114,10 +134,9 @@ public class QuizService : IQuizService, IScopedDependency
             CorrectCount = userQuizAddDto.CorrectCount,
             MistakeCount = userQuizAddDto.MistakeCount
         };
-        
-        await _userQuizRepository.AddAsync(userQuizEntity,cancellationToken);
+
+        await _userQuizRepository.AddAsync(userQuizEntity, cancellationToken);
 
         return new SuccessResult(Messages.SuccessFully);
-
     }
 }

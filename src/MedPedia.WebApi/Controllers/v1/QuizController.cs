@@ -10,12 +10,13 @@ public class QuizController : BaseController
 {
     private readonly IQuizService _quizService;
 
-    
-    public QuizController(IHttpContextAccessor httpContextAccessor, IQuizService quizService) : base(httpContextAccessor)
+
+    public QuizController(IHttpContextAccessor httpContextAccessor, IQuizService quizService) : base(
+        httpContextAccessor)
     {
         _quizService = quizService;
     }
-    
+
     [HttpGet("[action]")]
     public async Task<IActionResult> GetAllQuizTypeWithPercentage(
         CancellationToken cancellationToken)
@@ -28,42 +29,43 @@ public class QuizController : BaseController
 
         return Ok(result);
     }
-    
-    [HttpGet("[action]")]
-    public async Task<IActionResult> GetAllQuizCategories(CancellationToken cancellationToken)
+
+    [HttpGet("[action]/{quizTypeId:Int}")]
+    public async Task<IActionResult> GetAllQuizCategories(int quizTypeId, CancellationToken cancellationToken)
     {
-        var result = await _quizService.GetAllQuizCategories(cancellationToken);
+        var result = await _quizService.GetAllQuizCategories(quizTypeId, cancellationToken);
 
         if (!result.IsSuccess)
             return BadRequest(result);
 
         return Ok(result);
     }
-    
-    [HttpGet("[action]")]
-    public async Task<IActionResult> GetAllQuiz(CancellationToken cancellationToken)
+
+    [HttpGet("[action]/{quizCategoryId:Int}")]
+    public async Task<IActionResult> GetAllQuiz(int quizCategoryId, CancellationToken cancellationToken)
     {
-        var result = await _quizService.GetAllQuiz(cancellationToken);
+        var result = await _quizService.GetAllQuiz(quizCategoryId, cancellationToken);
 
         if (!result.IsSuccess)
             return BadRequest(result);
 
         return Ok(result);
     }
-    
+
     [HttpGet("[action]/{quizId:Int}")]
-    public async Task<IActionResult> GetQuestionsByQuizId(int quizId , CancellationToken cancellationToken)
+    public async Task<IActionResult> GetQuestionsByQuizId(int quizId, CancellationToken cancellationToken)
     {
-        var result = await _quizService.GetQuestionsByQuizId( quizId , cancellationToken);
+        var result = await _quizService.GetQuestionsByQuizId(quizId, cancellationToken);
 
         if (!result.IsSuccess)
             return BadRequest(result);
 
         return Ok(result);
     }
-    
+
     [HttpPost("[action]")]
-    public async Task<IActionResult> UserQuizAdd([FromBody] UserQuizAddDto userQuizAddDto, CancellationToken cancellationToken)
+    public async Task<IActionResult> UserQuizAdd([FromBody] UserQuizAddDto userQuizAddDto,
+        CancellationToken cancellationToken)
     {
         if (!ModelState.IsValid)
             return BadRequest(ModelState);
@@ -75,5 +77,4 @@ public class QuizController : BaseController
 
         return Ok(result);
     }
-    
 }
