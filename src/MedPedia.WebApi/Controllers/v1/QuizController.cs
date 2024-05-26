@@ -77,4 +77,15 @@ public class QuizController : BaseController
 
         return Ok(result);
     }
+    
+    [HttpGet("[action]/{userId:Int}")]
+    public async Task<IActionResult> GetUserQuizHistory(int userId, CancellationToken cancellationToken)
+    {
+        var result = await _quizService.GetUserQuizHistory(userId, cancellationToken);
+
+        if (!result.IsSuccess)
+            return BadRequest(result);
+
+        return Ok(result);
+    }
 }

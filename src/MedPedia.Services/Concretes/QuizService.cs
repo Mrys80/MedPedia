@@ -139,4 +139,27 @@ public class QuizService : IQuizService, IScopedDependency
 
         return new SuccessResult(Messages.SuccessFully);
     }
+
+    public async Task<IListResult<List<UserQuizHistoryDto>>> GetUserQuizHistory(int userId, CancellationToken cancellationToken)
+    {
+        var userQuizHistories = await (
+            from uq in _userQuizRepository.TableNoTracking
+            join q in _quizRepository.TableNoTracking on uq.QuizId equals q.Id
+            join qc in _quizCategoryRepository.TableNoTracking on q.QuizCategoryId equals qc.Id
+            join qt in _quizTypeRepository.TableNoTracking on qc.QuizTypeId equals qt.Id
+            where uq.UserId == userId
+            select new UserQuizHistoryDto
+            {
+                Id = uq.Id,
+                QuizCategoryTitle = qc.Title,
+                QuizTypeTitle = qt.Title,
+                QuizTitle = q.Title,
+                CorrectCount = uq.CorrectCount,
+                MistakeCount = uq.MistakeCount,
+                RegDateTime = uq.RegDate
+            }
+        ).ToListAsync(cancellationToken);
+
+        return new SuccessListResult<List<UserQuizHistoryDto>>(userQuizHistories);
+    }
 }

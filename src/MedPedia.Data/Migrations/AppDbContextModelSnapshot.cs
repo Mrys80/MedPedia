@@ -1055,6 +1055,9 @@ namespace Teb.Data.Migrations
                     b.Property<int>("RegUserId")
                         .HasColumnType("int");
 
+                    b.Property<int>("UserId")
+                        .HasColumnType("int");
+
                     b.HasKey("Id");
 
                     b.ToTable("UserQuizs", "dbo");

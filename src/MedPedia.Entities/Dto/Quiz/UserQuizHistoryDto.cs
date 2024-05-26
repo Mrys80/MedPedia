@@ -1,0 +1,20 @@
+﻿using MedPedia.Common.Entities.Abstracts;
+
+namespace MedPedia.Entities.Dto.Quiz;
+
+public class UserQuizHistoryDto : IDto
+{
+    public int Id { get; set; }
+
+    public string QuizCategoryTitle { get; set; }
+    
+    public string QuizTypeTitle { get; set; }
+    
+    public string QuizTitle { get; set; }
+    
+    public int CorrectCount { get; set; }
+    
+    public int MistakeCount { get; set; }
+    
+    public DateTime RegDateTime { get; set; }
+}
