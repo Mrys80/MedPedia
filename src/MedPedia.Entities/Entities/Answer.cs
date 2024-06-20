@@ -11,4 +11,6 @@ public class Answer : BaseEntity
     public bool IsCorrect { get; set; }
     
     public string Title { get; set; }
+    
+    public string Hint { get; set; }
 }

@@ -118,7 +118,8 @@ public class QuizService : IQuizService, IScopedDependency
                         {
                             Id = answer.Id,
                             Title = answer.Title,
-                            IsCorrect = answer.IsCorrect
+                            IsCorrect = answer.IsCorrect,
+                            Hint = answer.Hint
                         }).ToList()
                 })
             .Distinct()
