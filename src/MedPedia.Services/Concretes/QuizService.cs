@@ -22,7 +22,8 @@ public class QuizService : IQuizService, IScopedDependency
 
     public QuizService(IRepository<Quiz> quizRepository, IRepository<QuizType> quizTypeRepository,
         IRepository<UserQuiz> userQuizRepository, IRepository<QuizCategory> quizCategoryRepository,
-        IRepository<Question> questionRepository, IRepository<Answer> answerRepository)
+        IRepository<Question> questionRepository, IRepository<Answer> answerRepository
+    )
     {
         _quizRepository = quizRepository;
         _quizTypeRepository = quizTypeRepository;
@@ -100,33 +101,52 @@ public class QuizService : IQuizService, IScopedDependency
         return new SuccessListResult<List<QuizDto>>(quizDtos);
     }
 
-    public async Task<IListResult<List<QuestionDto>>> GetQuestionsByQuizId(int quizId,
-        CancellationToken cancellationToken)
+    public async Task<IListResult<List<QuestionDto>>> GetQuestionsByQuizId(int quizId, CancellationToken cancellationToken)
     {
-        var questionDtos = await (
-                from q in _questionRepository.TableNoTracking
-                where q.QuizId == quizId
-                join a in _answerRepository.TableNoTracking on q.Id equals a.QuestionId
-                select new QuestionDto
-                {
-                    Id = q.Id,
-                    Question = q.Title,
-                    Answers = (
-                        from answer in _answerRepository.TableNoTracking
-                        where answer.QuestionId == q.Id
-                        select new AnswerDto
-                        {
-                            Id = answer.Id,
-                            Title = answer.Title,
-                            IsCorrect = answer.IsCorrect,
-                            Hint = answer.Hint
-                        }).ToList()
-                })
+        var questions = await _questionRepository.TableNoTracking
+            .Where(q => q.QuizId == quizId)
+            .Select(q => new 
+            {
+                q.Id,
+                q.Title
+            })
             .Distinct()
             .ToListAsync(cancellationToken);
 
+        var questionIds = questions.Select(q => q.Id).ToList();
+        var answers = await _answerRepository.TableNoTracking
+            .Where(a => questionIds.Contains(a.QuestionId))
+            .Select(a => new 
+            {
+                a.Id,
+                a.QuestionId,
+                a.Title,
+                a.IsCorrect,
+                a.Hint
+            })
+            .ToListAsync(cancellationToken);
+
+        var questionDtos = questions
+            .Select(q => new QuestionDto
+            {
+                Id = q.Id,
+                Question = q.Title,
+                Answers = answers
+                    .Where(a => a.QuestionId == q.Id)
+                    .Select(a => new AnswerDto
+                    {
+                        Id = a.Id,
+                        Title = a.Title,
+                        IsCorrect = a.IsCorrect,
+                        Hint = a.Hint
+                    })
+                    .ToList()
+            })
+            .ToList();
+
         return new SuccessListResult<List<QuestionDto>>(questionDtos);
     }
+
 
     public async Task<IResult> UserQuizAdd(UserQuizAddDto userQuizAddDto, CancellationToken cancellationToken)
     {
@@ -141,7 +161,8 @@ public class QuizService : IQuizService, IScopedDependency
         return new SuccessResult(Messages.SuccessFully);
     }
 
-    public async Task<IListResult<List<UserQuizHistoryDto>>> GetUserQuizHistory(int userId, CancellationToken cancellationToken)
+    public async Task<IListResult<List<UserQuizHistoryDto>>> GetUserQuizHistory(int userId,
+        CancellationToken cancellationToken)
     {
         var userQuizHistories = await (
             from uq in _userQuizRepository.TableNoTracking
