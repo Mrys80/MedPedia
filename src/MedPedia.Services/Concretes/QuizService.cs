@@ -2,6 +2,8 @@
 using MedPedia.Common.Abstracts;
 using MedPedia.Common.Utilities.Enums;
 using MedPedia.Common.Utilities.Results;
+using MedPedia.Common.Utilities.Security.Jwt;
+using MedPedia.Entities.Dto;
 using MedPedia.Entities.Dto.Quiz;
 using MedPedia.Entities.Dto.QuizTypeWithPercentage;
 using MedPedia.Entities.Entities;
@@ -162,7 +164,7 @@ public class QuizService : IQuizService, IScopedDependency
         return new SuccessResult(Messages.SuccessFully);
     }
 
-    public async Task<IListResult<List<UserQuizHistoryDto>>> GetUserQuizHistory(int userId,
+    public async Task<IListResult<List<UserQuizHistoryDto>>> GetUserQuizHistory(CurrentUserDto currentUser,
         CancellationToken cancellationToken)
     {
         var userQuizHistories = await (
@@ -170,7 +172,7 @@ public class QuizService : IQuizService, IScopedDependency
             join q in _quizRepository.TableNoTracking on uq.QuizId equals q.Id
             join qc in _quizCategoryRepository.TableNoTracking on q.QuizCategoryId equals qc.Id
             join qt in _quizTypeRepository.TableNoTracking on qc.QuizTypeId equals qt.Id
-            where uq.UserId == userId
+            where uq.UserId == currentUser.UserId
             select new UserQuizHistoryDto
             {
                 Id = uq.Id,

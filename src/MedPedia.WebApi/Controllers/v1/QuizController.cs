@@ -77,11 +77,11 @@ public class QuizController : BaseController
 
         return Ok(result);
     }
-    
-    [HttpGet("[action]/{userId:Int}")]
-    public async Task<IActionResult> GetUserQuizHistory(int userId, CancellationToken cancellationToken)
+
+    [HttpGet("[action]")]
+    public async Task<IActionResult> GetUserQuizHistory(CancellationToken cancellationToken)
     {
-        var result = await _quizService.GetUserQuizHistory(userId, cancellationToken);
+        var result = await _quizService.GetUserQuizHistory(CurrentUser, cancellationToken);
 
         if (!result.IsSuccess)
             return BadRequest(result);

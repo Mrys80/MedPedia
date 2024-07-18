@@ -1,4 +1,5 @@
 ﻿using MedPedia.Common.Utilities.Results;
+using MedPedia.Entities.Dto;
 using MedPedia.Entities.Dto.Quiz;
 using MedPedia.Entities.Dto.QuizTypeWithPercentage;
 
@@ -16,6 +17,6 @@ public interface IQuizService
     
     Task<IResult> UserQuizAdd(UserQuizAddDto userQuizaddDto, CancellationToken cancellationToken);
     
-    Task<IListResult<List<UserQuizHistoryDto>>> GetUserQuizHistory(int userId, CancellationToken cancellationToken);
+    Task<IListResult<List<UserQuizHistoryDto>>> GetUserQuizHistory(CurrentUserDto currentUser, CancellationToken cancellationToken);
     
 }
