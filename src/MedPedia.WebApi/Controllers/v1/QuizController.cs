@@ -67,10 +67,7 @@ public class QuizController : BaseController
     public async Task<IActionResult> UserQuizAdd([FromBody] UserQuizAddDto userQuizAddDto,
         CancellationToken cancellationToken)
     {
-        if (!ModelState.IsValid)
-            return BadRequest(ModelState);
-
-        var result = await _quizService.UserQuizAdd(userQuizAddDto, cancellationToken);
+        var result = await _quizService.UserQuizAdd(userQuizAddDto, CurrentUser ,cancellationToken);
 
         if (!result.IsSuccess)
             return BadRequest(result);

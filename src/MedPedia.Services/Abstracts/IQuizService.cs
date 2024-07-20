@@ -15,7 +15,7 @@ public interface IQuizService
 
     Task<IListResult<List<QuestionDto>>> GetQuestionsByQuizId(int quizId, CancellationToken cancellationToken);
     
-    Task<IResult> UserQuizAdd(UserQuizAddDto userQuizaddDto, CancellationToken cancellationToken);
+    Task<IResult> UserQuizAdd(UserQuizAddDto userQuizaddDto, CurrentUserDto currentUser ,CancellationToken cancellationToken);
     
     Task<IListResult<List<UserQuizHistoryDto>>> GetUserQuizHistory(CurrentUserDto currentUser, CancellationToken cancellationToken);
     

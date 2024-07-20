@@ -151,12 +151,16 @@ public class QuizService : IQuizService, IScopedDependency
     }
 
 
-    public async Task<IResult> UserQuizAdd(UserQuizAddDto userQuizAddDto, CancellationToken cancellationToken)
+    public async Task<IResult> UserQuizAdd(UserQuizAddDto userQuizAddDto, CurrentUserDto currentUser ,CancellationToken cancellationToken)
     {
         var userQuizEntity = new UserQuiz
         {
+            QuizId = userQuizAddDto.QuizId,
             CorrectCount = userQuizAddDto.CorrectCount,
-            MistakeCount = userQuizAddDto.MistakeCount
+            MistakeCount = userQuizAddDto.MistakeCount,
+            RegUserId = currentUser.UserId,
+            RegDate = DateTime.Now,
+            IsDeleted = false
         };
 
         await _userQuizRepository.AddAsync(userQuizEntity, cancellationToken);
