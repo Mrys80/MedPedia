@@ -10,6 +10,7 @@ using MedPedia.Entities.Entities;
 using MedPedia.Services.Abstracts;
 using Microsoft.EntityFrameworkCore;
 using Teb.Data.Abstracts;
+using Teb.Data.Concretes.Context;
 using UserQuizHistoryDto = MedPedia.Entities.Dto.Quiz.UserQuizHistoryDto;
 
 namespace MedPedia.Services.Concretes;
@@ -41,38 +42,33 @@ public class QuizService : IQuizService, IScopedDependency
         CurrentUserDto currentUser, CancellationToken cancellationToken)
 
     {
-        var quizTypes = await _quizTypeRepository.GetListAsync(q => q.IsDeleted == false, cancellationToken);
-
-
-        var quizTypeDtos = await Task.WhenAll(quizTypes.Select(async quizType =>
-        {
-            var quizCategoryIds = await _quizCategoryRepository.GetListAsync(
-                qc => qc.QuizTypeId == quizType.Id && !qc.IsDeleted, cancellationToken);
-
-            var quizCategoryIdList = quizCategoryIds.Select(qc => qc.Id).ToList();
-
-            var quizzes = await _quizRepository.GetListAsync(
-                q => quizCategoryIdList.Contains(q.QuizCategoryId) && !q.IsDeleted, cancellationToken);
-
-            var totalQuizzes = quizzes.Count;
-
-            var userQuizzes = await _userQuizRepository.GetListAsync(
-                uq => uq.UserId == currentUser.UserId && quizzes.Select(q => q.Id).Contains(uq.QuizId),
-                cancellationToken);
-
-            var completedQuizzes = userQuizzes.Count;
-            var percentage = totalQuizzes > 0 ? (double)completedQuizzes / totalQuizzes * 100 : 0;
-
-            return new QuizTypeWithPercentageDto
+        var query = from quizType in _quizTypeRepository.TableNoTracking
+            join quizCategory in _quizCategoryRepository.TableNoTracking on quizType.Id equals quizCategory.QuizTypeId
+            join quiz in _quizRepository.TableNoTracking on quizCategory.Id equals quiz.QuizCategoryId into quizzesGroup
+            from quiz in quizzesGroup.DefaultIfEmpty()
+            join userQuiz in _userQuizRepository.TableNoTracking.Where(uq => uq.UserId == currentUser.UserId) on quiz.Id
+                equals userQuiz.QuizId into userQuizzesGroup
+            from userQuiz in userQuizzesGroup.DefaultIfEmpty()
+            group new { quizType, quiz, userQuiz } by quizType
+            into g
+            select new
             {
-                Id = quizType.Id,
-                Title = quizType.Title,
-                Percentage = percentage
+                QuizTypeId = g.Key.Id,
+                QuizTypeTitle = g.Key.Title,
+                TotalCount = g.Count(q => q.quiz != null),
+                CompletedCount = g.Count(q => q.userQuiz != null)
             };
-        }));
 
+        var result = await query
+            .Select(q => new QuizTypeWithPercentageDto
+            {
+                Id = q.QuizTypeId,
+                Title = q.QuizTypeTitle,
+                Percentage = q.TotalCount == 0 ? 0 : (double)q.CompletedCount / q.TotalCount * 100
+            })
+            .ToListAsync(cancellationToken);
 
-        return new SuccessListResult<List<QuizTypeWithPercentageDto>>(quizTypeDtos.ToList());
+        return new SuccessListResult<List<QuizTypeWithPercentageDto>>(result);
     }
 
     public async Task<IListResult<List<QuizCategoryDto>>> GetAllQuizCategories(int quizTypeId,
