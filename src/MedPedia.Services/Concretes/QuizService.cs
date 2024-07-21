@@ -38,7 +38,7 @@ public class QuizService : IQuizService, IScopedDependency
 
 
     public async Task<IListResult<List<QuizTypeWithPercentageDto>>> GetAllQuizTypeWithPercentage(
-        CancellationToken cancellationToken)
+        CurrentUserDto currentUser, CancellationToken cancellationToken)
     {
         var data = await (
             from qt in _quizTypeRepository.TableNoTracking
@@ -48,6 +48,7 @@ public class QuizService : IQuizService, IScopedDependency
             from q in qGroup.DefaultIfEmpty()
             join uq in _userQuizRepository.TableNoTracking on q.Id equals uq.QuizId into uqGroup
             from uq in uqGroup.DefaultIfEmpty()
+            where uq.UserId == currentUser.UserId
             select new
             {
                 QuizTypeId = qt.Id,
@@ -62,7 +63,7 @@ public class QuizService : IQuizService, IScopedDependency
             {
                 Id = g.Key.QuizTypeId,
                 Title = g.Key.QuizTypeTitle,
-                Percentage = g.Key.QuizTypeId == 0 || g.Count(d => d.QuizId.HasValue) == 0
+                Percentage = g.Key.QuizTypeId == 0 || !g.Any(d => d.QuizId.HasValue)
                     ? 0
                     : (double)g.Count(d => d.IsCompleted) / g.Count(d => d.QuizId.HasValue) * 100
             }).ToList();
@@ -89,26 +90,29 @@ public class QuizService : IQuizService, IScopedDependency
     public async Task<IListResult<List<QuizDto>>> GetAllQuiz(int quizCategoryId, CancellationToken cancellationToken)
     {
         var quizDtos = await (
-            from q in _quizRepository.TableNoTracking
-            join uq in _userQuizRepository.TableNoTracking on q.Id equals uq.QuizId into gj
-            from uq in gj.DefaultIfEmpty()
-            where q.QuizCategoryId == quizCategoryId
-            select new QuizDto
-            {
-                Id = q.Id,
-                Title = q.Title,
-                IsDone = uq != null
-            }
-        ).ToListAsync(cancellationToken);
+                from q in _quizRepository.TableNoTracking
+                join uq in _userQuizRepository.TableNoTracking on q.Id equals uq.QuizId into gj
+                from uq in gj.DefaultIfEmpty()
+                where q.QuizCategoryId == quizCategoryId
+                select new QuizDto
+                {
+                    Id = q.Id,
+                    Title = q.Title,
+                    IsDone = uq != null
+                }
+            )
+            .Distinct()
+            .ToListAsync(cancellationToken);
 
         return new SuccessListResult<List<QuizDto>>(quizDtos);
     }
 
-    public async Task<IListResult<List<QuestionDto>>> GetQuestionsByQuizId(int quizId, CancellationToken cancellationToken)
+    public async Task<IListResult<List<QuestionDto>>> GetQuestionsByQuizId(int quizId,
+        CancellationToken cancellationToken)
     {
         var questions = await _questionRepository.TableNoTracking
             .Where(q => q.QuizId == quizId)
-            .Select(q => new 
+            .Select(q => new
             {
                 q.Id,
                 q.Title
@@ -119,7 +123,7 @@ public class QuizService : IQuizService, IScopedDependency
         var questionIds = questions.Select(q => q.Id).ToList();
         var answers = await _answerRepository.TableNoTracking
             .Where(a => questionIds.Contains(a.QuestionId))
-            .Select(a => new 
+            .Select(a => new
             {
                 a.Id,
                 a.QuestionId,
@@ -151,7 +155,8 @@ public class QuizService : IQuizService, IScopedDependency
     }
 
 
-    public async Task<IResult> UserQuizAdd(UserQuizAddDto userQuizAddDto, CurrentUserDto currentUser ,CancellationToken cancellationToken)
+    public async Task<IResult> UserQuizAdd(UserQuizAddDto userQuizAddDto, CurrentUserDto currentUser,
+        CancellationToken cancellationToken)
     {
         var userQuizEntity = new UserQuiz
         {

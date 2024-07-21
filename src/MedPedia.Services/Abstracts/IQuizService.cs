@@ -7,7 +7,7 @@ namespace MedPedia.Services.Abstracts;
 
 public interface IQuizService
 {
-    Task<IListResult<List<QuizTypeWithPercentageDto>>> GetAllQuizTypeWithPercentage(CancellationToken cancellationToken);
+    Task<IListResult<List<QuizTypeWithPercentageDto>>> GetAllQuizTypeWithPercentage(CurrentUserDto currentUser,CancellationToken cancellationToken);
 
     Task<IListResult<List<QuizCategoryDto>>> GetAllQuizCategories(int quizTypeId,CancellationToken cancellationToken);
     

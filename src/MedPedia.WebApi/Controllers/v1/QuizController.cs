@@ -22,7 +22,7 @@ public class QuizController : BaseController
         CancellationToken cancellationToken)
     {
         var result =
-            await _quizService.GetAllQuizTypeWithPercentage(cancellationToken);
+            await _quizService.GetAllQuizTypeWithPercentage(CurrentUser,cancellationToken);
 
         if (!result.IsSuccess)
             return BadRequest(result);
