@@ -40,36 +40,29 @@ public class QuizService : IQuizService, IScopedDependency
     public async Task<IListResult<List<QuizTypeWithPercentageDto>>> GetAllQuizTypeWithPercentage(
         CurrentUserDto currentUser, CancellationToken cancellationToken)
     {
-        var data = await (
-            from qt in _quizTypeRepository.TableNoTracking
-            join qc in _quizCategoryRepository.TableNoTracking on qt.Id equals qc.QuizTypeId into qcGroup
-            from qc in qcGroup.DefaultIfEmpty()
-            join q in _quizRepository.TableNoTracking on qc.Id equals q.QuizCategoryId into qGroup
-            from q in qGroup.DefaultIfEmpty()
+        var userQuizData = await (from qt in _quizTypeRepository.TableNoTracking
+            join qc in _quizCategoryRepository.TableNoTracking on qt.Id equals qc.QuizTypeId
+            join q in _quizRepository.TableNoTracking on qc.Id equals q.QuizCategoryId
             join uq in _userQuizRepository.TableNoTracking on q.Id equals uq.QuizId into uqGroup
-            from uq in uqGroup.DefaultIfEmpty()
-            where uq.UserId == currentUser.UserId
+            from uq in uqGroup.Where(u => u.UserId == currentUser.UserId).DefaultIfEmpty()
+            group uq by new { qt.Id, qt.Title }
+            into g
             select new
             {
-                QuizTypeId = qt.Id,
-                QuizTypeTitle = qt.Title,
-                QuizId = q != null ? (int?)q.Id : null,
-                IsCompleted = uq != null
+                QuizTypeId = g.Key.Id,
+                QuizTypeTitle = g.Key.Title,
+                TotalQuestions = g.Sum(uq => (uq != null) ? (uq.CorrectCount + uq.MistakeCount) : 0),
+                CorrectQuestions = g.Sum(uq => (uq != null) ? uq.CorrectCount : 0)
             }).ToListAsync(cancellationToken);
 
-        var groupedData = data
-            .GroupBy(d => new { d.QuizTypeId, d.QuizTypeTitle })
-            .Select(g => new QuizTypeWithPercentageDto
-            {
-                Id = g.Key.QuizTypeId,
-                Title = g.Key.QuizTypeTitle,
-                Percentage = g.Key.QuizTypeId == 0 || !g.Any(d => d.QuizId.HasValue)
-                    ? 0
-                    : (double)g.Count(d => d.IsCompleted) / g.Count(d => d.QuizId.HasValue) * 100
-            }).ToList();
+        var result = userQuizData.Select(data => new QuizTypeWithPercentageDto
+        {
+            Id = data.QuizTypeId,
+            Title = data.QuizTypeTitle,
+            Percentage = data.TotalQuestions > 0 ? (double)data.CorrectQuestions / data.TotalQuestions * 100 : 0
+        }).ToList();
 
-
-        return new SuccessListResult<List<QuizTypeWithPercentageDto>>(groupedData);
+        return new SuccessListResult<List<QuizTypeWithPercentageDto>>(result);
     }
 
     public async Task<IListResult<List<QuizCategoryDto>>> GetAllQuizCategories(int quizTypeId,
