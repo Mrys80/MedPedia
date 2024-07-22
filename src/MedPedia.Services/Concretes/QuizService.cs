@@ -195,4 +195,94 @@ public class QuizService : IQuizService, IScopedDependency
 
         return new SuccessListResult<List<UserQuizHistoryDto>>(userQuizHistories);
     }
+
+    public async Task<IResult> AddQuizType(AddQuizTypeDto addQuizTypeDto, CurrentUserDto currentUser,
+        CancellationToken cancellationToken)
+    {
+        var quizType = new QuizType
+        {
+            Title = addQuizTypeDto.Title,
+            RegUserId = currentUser.UserId,
+            RegDate = DateTime.Now,
+            IsDeleted = false
+        };
+
+        await _quizTypeRepository.AddAsync(quizType, cancellationToken);
+
+        return new SuccessResult(Messages.SuccessFully);
+    }
+
+    public async Task<IListResult<List<QuizTypeDto>>> GetAllQuizType(CancellationToken cancellationToken)
+    {
+        var quizTypes = await _quizTypeRepository.GetListAsync(x => x.IsDeleted == false, cancellationToken);
+
+        var quizTypeDtos = quizTypes.Adapt<List<QuizTypeDto>>();
+
+        return new SuccessListResult<List<QuizTypeDto>>(quizTypeDtos);
+    }
+
+    public async Task<IResult> AddQuizCategory(AddQuizCategoryDto addQuizCategoryDto, CurrentUserDto currentUser,
+        CancellationToken cancellationToken)
+    {
+        var quizCategory = new QuizCategory
+        {
+            Title = addQuizCategoryDto.Title,
+            QuizTypeId = addQuizCategoryDto.QuizTypeId,
+            RegUserId = currentUser.UserId,
+            RegDate = DateTime.Now,
+            IsDeleted = false
+        };
+
+        await _quizCategoryRepository.AddAsync(quizCategory, cancellationToken);
+
+        return new SuccessResult(Messages.SuccessFully);
+    }
+
+    public async Task<IResult> AddQuiz(AddQuizDto addQuizDto, CurrentUserDto currentUser,
+        CancellationToken cancellationToken)
+    {
+        var quiz = new Quiz
+        {
+            Title = addQuizDto.Title,
+            QuizCategoryId = addQuizDto.QuizCategoryId,
+            RegUserId = currentUser.UserId,
+            RegDate = DateTime.Now,
+            IsDeleted = false
+        };
+
+        await _quizRepository.AddAsync(quiz, cancellationToken);
+
+        return new SuccessResult(Messages.SuccessFully);
+    }
+
+    public async Task<IResult> AddQuestion(AddQuestionDto addQuestionDto, CurrentUserDto currentUser,
+        CancellationToken cancellationToken)
+    {
+        var question = new Question
+        {
+            QuizId = addQuestionDto.QuizId,
+            Title = addQuestionDto.Title,
+            RegUserId = currentUser.UserId,
+            RegDate = DateTime.Now,
+            IsDeleted = false
+        };
+
+        await _questionRepository.AddAsync(question, cancellationToken);
+
+        foreach (var answer in addQuestionDto.Answers.Select(answerDto => new Answer
+                 {
+                     QuestionId = question.Id,
+                     Title = answerDto.Title,
+                     IsCorrect = answerDto.IsCorrect,
+                     Hint = answerDto.Hint,
+                     RegUserId = currentUser.UserId,
+                     RegDate = DateTime.Now,
+                     IsDeleted = false
+                 }))
+        {
+            await _answerRepository.AddAsync(answer, cancellationToken);
+        }
+
+        return new SuccessResult(Messages.SuccessFully);
+    }
 }

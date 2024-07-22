@@ -22,7 +22,7 @@ public class QuizController : BaseController
         CancellationToken cancellationToken)
     {
         var result =
-            await _quizService.GetAllQuizTypeWithPercentage(CurrentUser,cancellationToken);
+            await _quizService.GetAllQuizTypeWithPercentage(CurrentUser, cancellationToken);
 
         if (!result.IsSuccess)
             return BadRequest(result);
@@ -67,7 +67,7 @@ public class QuizController : BaseController
     public async Task<IActionResult> UserQuizAdd([FromBody] UserQuizAddDto userQuizAddDto,
         CancellationToken cancellationToken)
     {
-        var result = await _quizService.UserQuizAdd(userQuizAddDto, CurrentUser ,cancellationToken);
+        var result = await _quizService.UserQuizAdd(userQuizAddDto, CurrentUser, cancellationToken);
 
         if (!result.IsSuccess)
             return BadRequest(result);
@@ -79,6 +79,65 @@ public class QuizController : BaseController
     public async Task<IActionResult> GetUserQuizHistory(CancellationToken cancellationToken)
     {
         var result = await _quizService.GetUserQuizHistory(CurrentUser, cancellationToken);
+
+        if (!result.IsSuccess)
+            return BadRequest(result);
+
+        return Ok(result);
+    }
+
+    [HttpPost("[action]")]
+    public async Task<IActionResult> AddQuizType([FromBody] AddQuizTypeDto addQuizTypeDto,
+        CancellationToken cancellationToken)
+    {
+        var result = await _quizService.AddQuizType(addQuizTypeDto, CurrentUser, cancellationToken);
+
+        if (!result.IsSuccess)
+            return BadRequest(result);
+
+        return Ok(result);
+    }
+
+    [HttpGet("[action]")]
+    public async Task<IActionResult> GetAllQuizType(CancellationToken cancellationToken)
+    {
+        var result = await _quizService.GetAllQuizType(cancellationToken);
+
+        if (!result.IsSuccess)
+            return BadRequest(result);
+
+        return Ok(result);
+    }
+
+    [HttpPost("[action]")]
+    public async Task<IActionResult> AddQuizCategory([FromBody] AddQuizCategoryDto addQuizCategoryDto,
+        CancellationToken cancellationToken)
+    {
+        var result = await _quizService.AddQuizCategory(addQuizCategoryDto, CurrentUser, cancellationToken);
+
+        if (!result.IsSuccess)
+            return BadRequest(result);
+
+        return Ok(result);
+    }
+
+    [HttpPost("[action]")]
+    public async Task<IActionResult> AddQuiz([FromBody] AddQuizDto addQuizDto,
+        CancellationToken cancellationToken)
+    {
+        var result = await _quizService.AddQuiz(addQuizDto, CurrentUser, cancellationToken);
+
+        if (!result.IsSuccess)
+            return BadRequest(result);
+
+        return Ok(result);
+    }
+
+    [HttpPost("[action]")]
+    public async Task<IActionResult> AddQuestion([FromBody] AddQuestionDto addQuestionDto,
+        CancellationToken cancellationToken)
+    {
+        var result = await _quizService.AddQuestion(addQuestionDto, CurrentUser, cancellationToken);
 
         if (!result.IsSuccess)
             return BadRequest(result);
