@@ -165,6 +165,7 @@ public class QuizService : IQuizService, IScopedDependency
         {
             QuizId = userQuizAddDto.QuizId,
             CorrectCount = userQuizAddDto.CorrectCount,
+            UserId = currentUser.UserId,
             MistakeCount = userQuizAddDto.MistakeCount,
             RegUserId = currentUser.UserId,
             RegDate = DateTime.Now,
