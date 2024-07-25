@@ -56,7 +56,10 @@ public class QuizService : IQuizService, IScopedDependency
                 QuizTypeId = g.Key.Id,
                 QuizTypeTitle = g.Key.Title,
                 TotalCount = g.Count(q => q.quiz != null),
-                CompletedCount = g.Select(q => q.userQuiz?.QuizId).Distinct().Count(id => id != null)
+                CompletedCount = g.Where(q => q.userQuiz != null)
+                    .Select(q => q.userQuiz.QuizId)
+                    .Distinct()
+                    .Count()
             };
 
         var result = await query
@@ -69,6 +72,7 @@ public class QuizService : IQuizService, IScopedDependency
             .ToListAsync(cancellationToken);
 
         return new SuccessListResult<List<QuizTypeWithPercentageDto>>(result);
+
 
     }
 
