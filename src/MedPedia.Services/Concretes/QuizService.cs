@@ -46,30 +46,28 @@ public class QuizService : IQuizService, IScopedDependency
             join quizCategory in _quizCategoryRepository.TableNoTracking on quizType.Id equals quizCategory.QuizTypeId
             join quiz in _quizRepository.TableNoTracking on quizCategory.Id equals quiz.QuizCategoryId into quizzesGroup
             from quiz in quizzesGroup.DefaultIfEmpty()
-            join userQuiz in _userQuizRepository.TableNoTracking.Where(uq => uq.UserId == currentUser.UserId) on quiz.Id
-                equals userQuiz.QuizId into userQuizzesGroup
+            join userQuiz in _userQuizRepository.TableNoTracking.Where(uq => uq.UserId == currentUser.UserId) on quiz.Id equals userQuiz.QuizId into userQuizzesGroup
             from userQuiz in userQuizzesGroup.DefaultIfEmpty()
-            group new { quizType, quiz, userQuiz } by quizType
-            into g
+            group new { quizType, quiz, userQuiz } by quizType into g
             select new
             {
                 QuizTypeId = g.Key.Id,
                 QuizTypeTitle = g.Key.Title,
-                TotalCount = g.Count(q => q.quiz != null),
+                TotalCount = g.Select(q => q.quiz?.Id).Distinct().Count(q => q != null),
                 CompletedCount = g.Where(q => q.userQuiz != null)
                     .Select(q => q.userQuiz.QuizId)
                     .Distinct()
                     .Count()
             };
 
-        var result = await query
+        var result = await Task.Run(() => query
             .Select(q => new QuizTypeWithPercentageDto
             {
                 Id = q.QuizTypeId,
                 Title = q.QuizTypeTitle,
                 Percentage = q.TotalCount == 0 ? 0 : (double)q.CompletedCount / q.TotalCount * 100
             })
-            .ToListAsync(cancellationToken);
+            .ToList(), cancellationToken);
 
         return new SuccessListResult<List<QuizTypeWithPercentageDto>>(result);
 
