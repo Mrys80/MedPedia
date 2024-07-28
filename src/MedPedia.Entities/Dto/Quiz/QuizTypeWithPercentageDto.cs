@@ -1,6 +1,6 @@
 ﻿using MedPedia.Common.Entities.Abstracts;
 
-namespace MedPedia.Entities.Dto.QuizTypeWithPercentage;
+namespace MedPedia.Entities.Dto.Quiz;
 
 public class QuizTypeWithPercentageDto : IDto
 {

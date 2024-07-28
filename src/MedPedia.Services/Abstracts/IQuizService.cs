@@ -1,7 +1,6 @@
 ﻿using MedPedia.Common.Utilities.Results;
 using MedPedia.Entities.Dto;
 using MedPedia.Entities.Dto.Quiz;
-using MedPedia.Entities.Dto.QuizTypeWithPercentage;
 
 namespace MedPedia.Services.Abstracts;
 

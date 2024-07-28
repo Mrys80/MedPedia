@@ -5,7 +5,6 @@ using MedPedia.Common.Utilities.Results;
 using MedPedia.Common.Utilities.Security.Jwt;
 using MedPedia.Entities.Dto;
 using MedPedia.Entities.Dto.Quiz;
-using MedPedia.Entities.Dto.QuizTypeWithPercentage;
 using MedPedia.Entities.Entities;
 using MedPedia.Services.Abstracts;
 using Microsoft.EntityFrameworkCore;
