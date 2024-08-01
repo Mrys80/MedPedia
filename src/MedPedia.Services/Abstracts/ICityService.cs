@@ -1,7 +1,7 @@
 using MedPedia.Common.Utilities.Results;
 using MedPedia.Entities.Dto.Cities;
 
-namespace MedPedia.Entities.Entities;
+namespace MedPedia.Services.Abstracts;
 
 public interface ICityService
 {

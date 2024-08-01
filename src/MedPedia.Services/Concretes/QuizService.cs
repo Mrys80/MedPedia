@@ -2,14 +2,12 @@
 using MedPedia.Common.Abstracts;
 using MedPedia.Common.Utilities.Enums;
 using MedPedia.Common.Utilities.Results;
-using MedPedia.Common.Utilities.Security.Jwt;
 using MedPedia.Entities.Dto;
 using MedPedia.Entities.Dto.Quiz;
 using MedPedia.Entities.Entities;
 using MedPedia.Services.Abstracts;
 using Microsoft.EntityFrameworkCore;
 using Teb.Data.Abstracts;
-using Teb.Data.Concretes.Context;
 using UserQuizHistoryDto = MedPedia.Entities.Dto.Quiz.UserQuizHistoryDto;
 
 namespace MedPedia.Services.Concretes;
