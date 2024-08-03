@@ -9,7 +9,9 @@ public class UserDto:IDto
     public string? LastName { get; set; }
     public string? Email { get; set; }
     public string? City { get; set; }
+    public int? CityId { get; set; }
     public string? Province { get; set; }
+    public int? ProvinceId { get; set; }
     public string? BirthDate { get; set; }
     public string PhoneNumber { get; set; }
 }

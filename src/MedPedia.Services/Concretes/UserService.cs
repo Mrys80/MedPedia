@@ -37,7 +37,9 @@ public class UserService(
                 BirthDate = user.BirthDate,
                 Email = user.Email,
                 City = city.CityName,
+                CityId = city.Id,
                 Province = province.ProvinceName,
+                ProvinceId = province.Id,
                 PhoneNumber = user.PhoneNumber
             }
         ).FirstOrDefaultAsync(cancellationToken);
