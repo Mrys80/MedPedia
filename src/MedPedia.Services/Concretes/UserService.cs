@@ -25,10 +25,11 @@ public class UserService(
         var userInfo = await
         (
             from user in userRepository.TableNoTracking
-            join province in provinceRepository.TableNoTracking on user.ProvinceId equals province.Id
-            join city in cityRepository.TableNoTracking on user.CityId equals city.Id
-            where
-                user.Id == currentUser.UserId
+            join province in provinceRepository.TableNoTracking on user.ProvinceId equals province.Id into userProvince
+            from province in userProvince.DefaultIfEmpty()
+            join city in cityRepository.TableNoTracking on user.CityId equals city.Id into userCity
+            from city in userCity.DefaultIfEmpty() 
+            where user.Id == currentUser.UserId
             select new UserDto
             {
                 Id = user.Id,
@@ -49,9 +50,9 @@ public class UserService(
             return new ErrorDataResult<UserDto>(Messages.NotFound);
         }
 
-
         return new SuccessDataResult<UserDto>(userInfo);
     }
+    
 
     public async Task<IDataResult<UserDto>> SetUserInfo(AddUserInfoDto addUserInfoDto, CurrentUserDto currentUser,
         CancellationToken cancellationToken)

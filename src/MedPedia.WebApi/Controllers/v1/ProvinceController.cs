@@ -1,4 +1,5 @@
 using MedPedia.Entities.Entities;
+using MedPedia.Services.Abstracts;
 using MedPedia.WebFramework.Api;
 using Microsoft.AspNetCore.Mvc;
 
