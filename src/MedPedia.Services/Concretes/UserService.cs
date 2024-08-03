@@ -5,7 +5,6 @@ using MedPedia.Common.Entities.Entities;
 using MedPedia.Common.Utilities.Enums;
 using MedPedia.Common.Utilities.Results;
 using MedPedia.Entities.Dto;
-using MedPedia.Entities.Dto.Prescription;
 using MedPedia.Entities.Entities;
 using MedPedia.Services.Abstracts;
 using Microsoft.EntityFrameworkCore;
