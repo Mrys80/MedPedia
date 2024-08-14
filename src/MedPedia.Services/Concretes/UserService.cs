@@ -61,7 +61,7 @@ public class UserService(
                 x.IsDeleted == false &&
                 x.Id == currentUser.UserId,
             cancellationToken);
-
+        
         userInfo.FirstName = addUserInfoDto.FirstName;
         userInfo.LastName = addUserInfoDto.LastName;
         userInfo.Email = addUserInfoDto.Email;
