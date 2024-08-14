@@ -5,12 +5,52 @@ using Microsoft.EntityFrameworkCore.Migrations;
 
 namespace Teb.Data.Migrations
 {
-    public partial class FirstInit : Migration
+    /// <inheritdoc />
+    public partial class Initial : Migration
     {
+        /// <inheritdoc />
         protected override void Up(MigrationBuilder migrationBuilder)
         {
             migrationBuilder.EnsureSchema(
                 name: "dbo");
+
+            migrationBuilder.CreateTable(
+                name: "Answers",
+                schema: "dbo",
+                columns: table => new
+                {
+                    Id = table.Column<int>(type: "int", nullable: false)
+                        .Annotation("SqlServer:Identity", "1, 1"),
+                    QuestionId = table.Column<int>(type: "int", nullable: false),
+                    IsCorrect = table.Column<bool>(type: "bit", nullable: false),
+                    Title = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    Hint = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    RegDate = table.Column<DateTime>(type: "datetime2", nullable: false),
+                    RegUserId = table.Column<int>(type: "int", nullable: false),
+                    IsDeleted = table.Column<bool>(type: "bit", nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_Answers", x => x.Id);
+                });
+
+            migrationBuilder.CreateTable(
+                name: "Cities",
+                schema: "dbo",
+                columns: table => new
+                {
+                    Id = table.Column<int>(type: "int", nullable: false)
+                        .Annotation("SqlServer:Identity", "1, 1"),
+                    CityName = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    ProvinceId = table.Column<int>(type: "int", nullable: false),
+                    RegDate = table.Column<DateTime>(type: "datetime2", nullable: false),
+                    RegUserId = table.Column<int>(type: "int", nullable: false),
+                    IsDeleted = table.Column<bool>(type: "bit", nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_Cities", x => x.Id);
+                });
 
             migrationBuilder.CreateTable(
                 name: "ClassificationOfPregnancies",
@@ -66,13 +106,47 @@ namespace Teb.Data.Migrations
                 });
 
             migrationBuilder.CreateTable(
+                name: "DiseaseInformations",
+                schema: "dbo",
+                columns: table => new
+                {
+                    Id = table.Column<int>(type: "int", nullable: false)
+                        .Annotation("SqlServer:Identity", "1, 1"),
+                    DiseaseId = table.Column<int>(type: "int", nullable: false),
+                    DefinitionOfDisease = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    Signs = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    Cause = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    RiskFactors = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    TransmissionWays = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    Complications = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    PreparingForVisit = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    WhenVisit = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    Recovery = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    DiagnosticTests = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    DrugTreatment = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    Treatment = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    ChangeOfLifestyle = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    ImportantPoints = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    BasicPointsOfTreatment = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    Prevention = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    RegDate = table.Column<DateTime>(type: "datetime2", nullable: false),
+                    RegUserId = table.Column<int>(type: "int", nullable: false),
+                    IsDeleted = table.Column<bool>(type: "bit", nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_DiseaseInformations", x => x.Id);
+                });
+
+            migrationBuilder.CreateTable(
                 name: "Diseases",
                 schema: "dbo",
                 columns: table => new
                 {
                     Id = table.Column<int>(type: "int", nullable: false)
                         .Annotation("SqlServer:Identity", "1, 1"),
-                    Title = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    FaTitle = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    EnTitle = table.Column<string>(type: "nvarchar(max)", nullable: false),
                     ImageId = table.Column<string>(type: "nvarchar(max)", nullable: true),
                     DiseaseCategoryId = table.Column<int>(type: "int", nullable: false),
                     RegDate = table.Column<DateTime>(type: "datetime2", nullable: false),
@@ -134,7 +208,8 @@ namespace Teb.Data.Migrations
                     MartindaleClassificationId = table.Column<int>(type: "int", nullable: false),
                     PregnancyClassificationId = table.Column<int>(type: "int", nullable: false),
                     MethodOfUseId = table.Column<int>(type: "int", nullable: false),
-                    IndicationId = table.Column<int>(type: "int", nullable: false),
+                    Indication = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    SideEffect = table.Column<string>(type: "nvarchar(max)", nullable: false),
                     MechanismOfEffect = table.Column<string>(type: "nvarchar(max)", nullable: false),
                     BeginningOfEffect = table.Column<string>(type: "nvarchar(max)", nullable: false),
                     PeakOfEffect = table.Column<string>(type: "nvarchar(max)", nullable: false),
@@ -183,38 +258,72 @@ namespace Teb.Data.Migrations
                 });
 
             migrationBuilder.CreateTable(
-                name: "DrugSideEffects",
-                schema: "dbo",
-                columns: table => new
-                {
-                    Id = table.Column<int>(type: "int", nullable: false)
-                        .Annotation("SqlServer:Identity", "1, 1"),
-                    DrugId = table.Column<int>(type: "int", nullable: false),
-                    SideEffectId = table.Column<int>(type: "int", nullable: false),
-                    RegDate = table.Column<DateTime>(type: "datetime2", nullable: false),
-                    RegUserId = table.Column<int>(type: "int", nullable: false),
-                    IsDeleted = table.Column<bool>(type: "bit", nullable: false)
-                },
-                constraints: table =>
-                {
-                    table.PrimaryKey("PK_DrugSideEffects", x => x.Id);
-                });
-
-            migrationBuilder.CreateTable(
-                name: "Indications",
+                name: "ExperimentCategories",
                 schema: "dbo",
                 columns: table => new
                 {
                     Id = table.Column<int>(type: "int", nullable: false)
                         .Annotation("SqlServer:Identity", "1, 1"),
                     Title = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    ImageId = table.Column<string>(type: "nvarchar(max)", nullable: true),
                     RegDate = table.Column<DateTime>(type: "datetime2", nullable: false),
                     RegUserId = table.Column<int>(type: "int", nullable: false),
                     IsDeleted = table.Column<bool>(type: "bit", nullable: false)
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("PK_Indications", x => x.Id);
+                    table.PrimaryKey("PK_ExperimentCategories", x => x.Id);
+                });
+
+            migrationBuilder.CreateTable(
+                name: "ExperimentInformations",
+                schema: "dbo",
+                columns: table => new
+                {
+                    Id = table.Column<int>(type: "int", nullable: false)
+                        .Annotation("SqlServer:Identity", "1, 1"),
+                    ExperimentId = table.Column<int>(type: "int", nullable: false),
+                    Abbreviation = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    Usage = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    InterferingFactors = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    Description = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    NormalSuffering = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    ScopeOfCrisis = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    CommonCausesOfDeficiencyOrExcess = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    RelatedSymptomsOrDisease = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    PreSamplingConditions = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    RequiredSample = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    VialType = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    RelatedTests = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    ClinicaNotes = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    TestLimitations = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    RegDate = table.Column<DateTime>(type: "datetime2", nullable: false),
+                    RegUserId = table.Column<int>(type: "int", nullable: false),
+                    IsDeleted = table.Column<bool>(type: "bit", nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_ExperimentInformations", x => x.Id);
+                });
+
+            migrationBuilder.CreateTable(
+                name: "Experiments",
+                schema: "dbo",
+                columns: table => new
+                {
+                    Id = table.Column<int>(type: "int", nullable: false)
+                        .Annotation("SqlServer:Identity", "1, 1"),
+                    FaTitle = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    EnTitle = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    ImageId = table.Column<string>(type: "nvarchar(max)", nullable: true),
+                    ExperimentCategoryId = table.Column<int>(type: "int", nullable: false),
+                    RegDate = table.Column<DateTime>(type: "datetime2", nullable: false),
+                    RegUserId = table.Column<int>(type: "int", nullable: false),
+                    IsDeleted = table.Column<bool>(type: "bit", nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_Experiments", x => x.Id);
                 });
 
             migrationBuilder.CreateTable(
@@ -305,6 +414,94 @@ namespace Teb.Data.Migrations
                 });
 
             migrationBuilder.CreateTable(
+                name: "Provinces",
+                schema: "dbo",
+                columns: table => new
+                {
+                    Id = table.Column<int>(type: "int", nullable: false)
+                        .Annotation("SqlServer:Identity", "1, 1"),
+                    ProvinceName = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    RegDate = table.Column<DateTime>(type: "datetime2", nullable: false),
+                    RegUserId = table.Column<int>(type: "int", nullable: false),
+                    IsDeleted = table.Column<bool>(type: "bit", nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_Provinces", x => x.Id);
+                });
+
+            migrationBuilder.CreateTable(
+                name: "Questions",
+                schema: "dbo",
+                columns: table => new
+                {
+                    Id = table.Column<int>(type: "int", nullable: false)
+                        .Annotation("SqlServer:Identity", "1, 1"),
+                    Title = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    QuizId = table.Column<int>(type: "int", nullable: false),
+                    RegDate = table.Column<DateTime>(type: "datetime2", nullable: false),
+                    RegUserId = table.Column<int>(type: "int", nullable: false),
+                    IsDeleted = table.Column<bool>(type: "bit", nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_Questions", x => x.Id);
+                });
+
+            migrationBuilder.CreateTable(
+                name: "QuizCategories",
+                schema: "dbo",
+                columns: table => new
+                {
+                    Id = table.Column<int>(type: "int", nullable: false)
+                        .Annotation("SqlServer:Identity", "1, 1"),
+                    QuizTypeId = table.Column<int>(type: "int", nullable: false),
+                    Title = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    RegDate = table.Column<DateTime>(type: "datetime2", nullable: false),
+                    RegUserId = table.Column<int>(type: "int", nullable: false),
+                    IsDeleted = table.Column<bool>(type: "bit", nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_QuizCategories", x => x.Id);
+                });
+
+            migrationBuilder.CreateTable(
+                name: "QuizTypes",
+                schema: "dbo",
+                columns: table => new
+                {
+                    Id = table.Column<int>(type: "int", nullable: false)
+                        .Annotation("SqlServer:Identity", "1, 1"),
+                    Title = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    RegDate = table.Column<DateTime>(type: "datetime2", nullable: false),
+                    RegUserId = table.Column<int>(type: "int", nullable: false),
+                    IsDeleted = table.Column<bool>(type: "bit", nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_QuizTypes", x => x.Id);
+                });
+
+            migrationBuilder.CreateTable(
+                name: "Quizzes",
+                schema: "dbo",
+                columns: table => new
+                {
+                    Id = table.Column<int>(type: "int", nullable: false)
+                        .Annotation("SqlServer:Identity", "1, 1"),
+                    QuizCategoryId = table.Column<int>(type: "int", nullable: false),
+                    Title = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    RegDate = table.Column<DateTime>(type: "datetime2", nullable: false),
+                    RegUserId = table.Column<int>(type: "int", nullable: false),
+                    IsDeleted = table.Column<bool>(type: "bit", nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_Quizzes", x => x.Id);
+                });
+
+            migrationBuilder.CreateTable(
                 name: "Roles",
                 schema: "dbo",
                 columns: table => new
@@ -339,24 +536,6 @@ namespace Teb.Data.Migrations
                 });
 
             migrationBuilder.CreateTable(
-                name: "SideEffects",
-                schema: "dbo",
-                columns: table => new
-                {
-                    Id = table.Column<int>(type: "int", nullable: false)
-                        .Annotation("SqlServer:Identity", "1, 1"),
-                    Title = table.Column<string>(type: "nvarchar(max)", nullable: false),
-                    Description = table.Column<string>(type: "nvarchar(max)", nullable: false),
-                    RegDate = table.Column<DateTime>(type: "datetime2", nullable: false),
-                    RegUserId = table.Column<int>(type: "int", nullable: false),
-                    IsDeleted = table.Column<bool>(type: "bit", nullable: false)
-                },
-                constraints: table =>
-                {
-                    table.PrimaryKey("PK_SideEffects", x => x.Id);
-                });
-
-            migrationBuilder.CreateTable(
                 name: "TherapeuticClassifications",
                 schema: "dbo",
                 columns: table => new
@@ -371,6 +550,26 @@ namespace Teb.Data.Migrations
                 constraints: table =>
                 {
                     table.PrimaryKey("PK_TherapeuticClassifications", x => x.Id);
+                });
+
+            migrationBuilder.CreateTable(
+                name: "UserQuizs",
+                schema: "dbo",
+                columns: table => new
+                {
+                    Id = table.Column<int>(type: "int", nullable: false)
+                        .Annotation("SqlServer:Identity", "1, 1"),
+                    UserId = table.Column<int>(type: "int", nullable: false),
+                    QuizId = table.Column<int>(type: "int", nullable: false),
+                    CorrectCount = table.Column<int>(type: "int", nullable: false),
+                    MistakeCount = table.Column<int>(type: "int", nullable: false),
+                    RegDate = table.Column<DateTime>(type: "datetime2", nullable: false),
+                    RegUserId = table.Column<int>(type: "int", nullable: false),
+                    IsDeleted = table.Column<bool>(type: "bit", nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_UserQuizs", x => x.Id);
                 });
 
             migrationBuilder.CreateTable(
@@ -434,8 +633,17 @@ namespace Teb.Data.Migrations
                 });
         }
 
+        /// <inheritdoc />
         protected override void Down(MigrationBuilder migrationBuilder)
         {
+            migrationBuilder.DropTable(
+                name: "Answers",
+                schema: "dbo");
+
+            migrationBuilder.DropTable(
+                name: "Cities",
+                schema: "dbo");
+
             migrationBuilder.DropTable(
                 name: "ClassificationOfPregnancies",
                 schema: "dbo");
@@ -446,6 +654,10 @@ namespace Teb.Data.Migrations
 
             migrationBuilder.DropTable(
                 name: "DiseaseCategories",
+                schema: "dbo");
+
+            migrationBuilder.DropTable(
+                name: "DiseaseInformations",
                 schema: "dbo");
 
             migrationBuilder.DropTable(
@@ -469,11 +681,15 @@ namespace Teb.Data.Migrations
                 schema: "dbo");
 
             migrationBuilder.DropTable(
-                name: "DrugSideEffects",
+                name: "ExperimentCategories",
                 schema: "dbo");
 
             migrationBuilder.DropTable(
-                name: "Indications",
+                name: "ExperimentInformations",
+                schema: "dbo");
+
+            migrationBuilder.DropTable(
+                name: "Experiments",
                 schema: "dbo");
 
             migrationBuilder.DropTable(
@@ -497,6 +713,26 @@ namespace Teb.Data.Migrations
                 schema: "dbo");
 
             migrationBuilder.DropTable(
+                name: "Provinces",
+                schema: "dbo");
+
+            migrationBuilder.DropTable(
+                name: "Questions",
+                schema: "dbo");
+
+            migrationBuilder.DropTable(
+                name: "QuizCategories",
+                schema: "dbo");
+
+            migrationBuilder.DropTable(
+                name: "QuizTypes",
+                schema: "dbo");
+
+            migrationBuilder.DropTable(
+                name: "Quizzes",
+                schema: "dbo");
+
+            migrationBuilder.DropTable(
                 name: "Roles",
                 schema: "dbo");
 
@@ -505,11 +741,11 @@ namespace Teb.Data.Migrations
                 schema: "dbo");
 
             migrationBuilder.DropTable(
-                name: "SideEffects",
+                name: "TherapeuticClassifications",
                 schema: "dbo");
 
             migrationBuilder.DropTable(
-                name: "TherapeuticClassifications",
+                name: "UserQuizs",
                 schema: "dbo");
 
             migrationBuilder.DropTable(
