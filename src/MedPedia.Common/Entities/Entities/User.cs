@@ -12,6 +12,7 @@ public class User : BaseEntity
     public int? ProvinceId { get; set; }
 
     public string? BirthDate { get; set; }
+    public string? ImageId { get; set; }
 
     public int? ActivityTypeId { get; set; }
 

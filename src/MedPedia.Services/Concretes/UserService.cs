@@ -35,6 +35,7 @@ public class UserService(
                 FirstName = user.FirstName,
                 LastName = user.LastName,
                 BirthDate = user.BirthDate,
+                ImageId = user.ImageId,
                 Email = user.Email,
                 City = city.CityName,
                 CityId = city.Id,
@@ -68,6 +69,7 @@ public class UserService(
         userInfo.CityId = addUserInfoDto.CityId;
         userInfo.ProvinceId = addUserInfoDto.ProvinceId;
         userInfo.BirthDate = addUserInfoDto.BirthDate;
+        userInfo.ImageId = addUserInfoDto.ImageId;
 
 
         await userRepository.UpdateAsync(userInfo, cancellationToken);
