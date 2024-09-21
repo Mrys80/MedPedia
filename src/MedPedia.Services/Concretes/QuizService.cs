@@ -76,7 +76,7 @@ public class QuizService : IQuizService, IScopedDependency
 
 
     
-    public async Task<IListResult<List<QuizCategoryDto>>> GetAllQuizCategories(int quizTypeId,CurrentUserDto currentUser, CancellationToken cancellationToken)
+    public async Task<IListResult<List<QuizCategoryDto>>> GetAllQuizCategories(int quizTypeId, CurrentUserDto currentUser, CancellationToken cancellationToken)
     {
         var query =
             from quizCategory in _quizCategoryRepository.TableNoTracking
@@ -102,7 +102,7 @@ public class QuizService : IQuizService, IScopedDependency
                     .Count()
             };
 
-        var result = await Task.Run(() => query
+        var result = await query
             .Select(q => new QuizCategoryDto
             {
                 Id = q.CategoryId,
@@ -111,10 +111,11 @@ public class QuizService : IQuizService, IScopedDependency
                     ? "0%" 
                     : ((double)q.CompletedQuizzes / q.TotalQuizzes * 100).ToString("0.##") + "%"
             })
-            .ToList(), cancellationToken);
+            .ToListAsync(cancellationToken);
 
         return new SuccessListResult<List<QuizCategoryDto>>(result);
     }
+
 
 
     public async Task<IListResult<List<QuizDto>>> GetAllQuiz(int quizCategoryId, CurrentUserDto currentUser,
