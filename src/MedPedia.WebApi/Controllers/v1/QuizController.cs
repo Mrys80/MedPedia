@@ -33,7 +33,7 @@ public class QuizController : BaseController
     [HttpGet("[action]/{quizTypeId:Int}")]
     public async Task<IActionResult> GetAllQuizCategories(int quizTypeId, CancellationToken cancellationToken)
     {
-        var result = await _quizService.GetAllQuizCategories(quizTypeId, cancellationToken);
+        var result = await _quizService.GetAllQuizCategories(quizTypeId, CurrentUser, cancellationToken);
 
         if (!result.IsSuccess)
             return BadRequest(result);
