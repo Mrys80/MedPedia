@@ -9,7 +9,7 @@ public interface IQuizService
     Task<IListResult<List<QuizTypeWithPercentageDto>>> GetAllQuizTypeWithPercentage(CurrentUserDto currentUser,
         CancellationToken cancellationToken);
 
-    Task<IListResult<List<QuizCategoryDto>>> GetAllQuizCategories(int quizTypeId, CancellationToken cancellationToken);
+    Task<IListResult<List<QuizCategoryDto>>> GetAllQuizCategories(int quizTypeId,CurrentUserDto currentUser, CancellationToken cancellationToken);
 
     Task<IListResult<List<QuizDto>>> GetAllQuiz(int quizCategoryId,CurrentUserDto currentUser, CancellationToken cancellationToken);
 

@@ -7,4 +7,5 @@ public class QuizCategoryDto : IDto
     public int Id { get; set; }
 
     public string Title { get; set; }
+    public string Percentage { get; set; }
 }
