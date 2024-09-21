@@ -45,7 +45,8 @@ public class QuizService : IQuizService, IScopedDependency
             join userQuiz in _userQuizRepository.TableNoTracking.Where(uq => uq.UserId == currentUser.UserId) on quiz.Id
                 equals userQuiz.QuizId into userQuizzesGroup
             from userQuiz in userQuizzesGroup.DefaultIfEmpty()
-            group new { quizType, quiz, userQuiz } by quizType into g
+            group new { quizType, quiz, userQuiz } by quizType
+            into g
             select new
             {
                 QuizTypeId = g.Key.Id,
@@ -67,24 +68,22 @@ public class QuizService : IQuizService, IScopedDependency
                 Title = q.QuizTypeTitle,
                 Percentage = q.TotalCount == 0 ? 0 : (double)q.CompletedCount / q.TotalCount * 100
             })
-            .OrderByDescending(q => q.Percentage)  
-            .Take(4)  
+            .OrderByDescending(q => q.Percentage)
+            .Take(4)
             .ToList(), cancellationToken);
 
         return new SuccessListResult<List<QuizTypeWithPercentageDto>>(result);
     }
 
 
-    
-    public async Task<IListResult<List<QuizCategoryDto>>> GetAllQuizCategories(int quizTypeId, CurrentUserDto currentUser, CancellationToken cancellationToken)
+    public async Task<IListResult<List<QuizCategoryDto>>> GetAllQuizCategories(int quizTypeId,
+        CurrentUserDto currentUser, CancellationToken cancellationToken)
     {
-        var query =
-            from quizCategory in _quizCategoryRepository.TableNoTracking
+        var query = from quizCategory in _quizCategoryRepository.TableNoTracking
             where quizCategory.QuizTypeId == quizTypeId
-            join quiz in _quizRepository.TableNoTracking 
-                on quizCategory.Id equals quiz.QuizCategoryId into quizzesGroup
+            join quiz in _quizRepository.TableNoTracking on quizCategory.Id equals quiz.QuizCategoryId into quizzesGroup
             from quiz in quizzesGroup.DefaultIfEmpty()
-            join userQuiz in _userQuizRepository.TableNoTracking.Where(uq => uq.UserId == currentUser.UserId) 
+            join userQuiz in _userQuizRepository.TableNoTracking.Where(uq => uq.UserId == currentUser.UserId)
                 on quiz.Id equals userQuiz.QuizId into userQuizzesGroup
             from userQuiz in userQuizzesGroup.DefaultIfEmpty()
             group new { quizCategory, quiz, userQuiz } by quizCategory into g
@@ -102,20 +101,19 @@ public class QuizService : IQuizService, IScopedDependency
                     .Count()
             };
 
-        var result = await query
-            .Select(q => new QuizCategoryDto
-            {
-                Id = q.CategoryId,
-                Title = q.CategoryTitle,
-                Percentage = q.TotalQuizzes == 0 
-                    ? "0%" 
-                    : ((double)q.CompletedQuizzes / q.TotalQuizzes * 100).ToString("0.##") + "%"
-            })
-            .ToListAsync(cancellationToken);
+        var queryResult = await query.ToListAsync(cancellationToken);
+
+        var result = queryResult.Select(q => new QuizCategoryDto
+        {
+            Id = q.CategoryId,
+            Title = q.CategoryTitle,
+            Percentage = q.TotalQuizzes > 0 
+                ? ((double)q.CompletedQuizzes / q.TotalQuizzes * 100).ToString("0.##") + "%" 
+                : "0%"
+        }).ToList();
 
         return new SuccessListResult<List<QuizCategoryDto>>(result);
     }
-
 
 
     public async Task<IListResult<List<QuizDto>>> GetAllQuiz(int quizCategoryId, CurrentUserDto currentUser,
