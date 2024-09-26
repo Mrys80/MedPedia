@@ -86,7 +86,8 @@ public class QuizService : IQuizService, IScopedDependency
             join userQuiz in _userQuizRepository.TableNoTracking.Where(uq => uq.UserId == currentUser.UserId)
                 on quiz.Id equals userQuiz.QuizId into userQuizzesGroup
             from userQuiz in userQuizzesGroup.DefaultIfEmpty()
-            group new { quizCategory, quiz, userQuiz } by quizCategory into g
+            group new { quizCategory, quiz, userQuiz } by quizCategory
+            into g
             select new
             {
                 CategoryId = g.Key.Id,
@@ -107,8 +108,8 @@ public class QuizService : IQuizService, IScopedDependency
         {
             Id = q.CategoryId,
             Title = q.CategoryTitle,
-            Percentage = q.TotalQuizzes > 0 
-                ? ((double)q.CompletedQuizzes / q.TotalQuizzes * 100).ToString("0.##") + "%" 
+            Percentage = q.TotalQuizzes > 0
+                ? ((double)q.CompletedQuizzes / q.TotalQuizzes * 100).ToString("0.##") + "%"
                 : "0%"
         }).ToList();
 
@@ -131,11 +132,27 @@ public class QuizService : IQuizService, IScopedDependency
             select uq.QuizId
         ).Distinct().ToListAsync(cancellationToken);
 
+
+        var quizQuestionCounts = await (
+            from question in _questionRepository.TableNoTracking
+            group question by question.QuizId
+            into quizGroup
+            select new
+            {
+                QuizId = quizGroup.Key,
+                QuestionCount = quizGroup.Count()
+            }
+        ).ToListAsync(cancellationToken);
+
+        var questionCountDict = quizQuestionCounts.ToDictionary(q => q.QuizId, q => q.QuestionCount);
+
+
         var quizDtos = quizzes.Select(q => new QuizDto
         {
             Id = q.Id,
             Title = q.Title,
-            IsDone = userQuizIds.Contains(q.Id)
+            IsDone = userQuizIds.Contains(q.Id),
+            QuestionCount = questionCountDict.TryGetValue(q.Id, out var value) ? value : 0
         }).ToList();
 
         return new SuccessListResult<List<QuizDto>>(quizDtos);
