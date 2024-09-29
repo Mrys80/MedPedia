@@ -247,21 +247,34 @@ public class QuizService : IQuizService, IScopedDependency
             join qc in _quizCategoryRepository.TableNoTracking on q.QuizCategoryId equals qc.Id
             join qt in _quizTypeRepository.TableNoTracking on qc.QuizTypeId equals qt.Id
             where uq.UserId == currentUser.UserId
-            select new UserQuizHistoryDto
+            select new
             {
-                Id = uq.Id,
+                uq.Id,
                 QuizCategoryTitle = qc.Title,
                 QuizTypeTitle = qt.Title,
                 QuizTitle = q.Title,
                 CorrectCount = uq.CorrectCount,
                 MistakeCount = uq.MistakeCount,
                 RegDateTime = uq.RegDate,
-                QuestionCount = questionCountDict.TryGetValue(q.Id, out var questionCount) ? questionCount : 0
+                QuizId = q.Id
             }
         ).ToListAsync(cancellationToken);
 
-        return new SuccessListResult<List<UserQuizHistoryDto>>(userQuizHistories);
+        var userQuizHistoryDtos = userQuizHistories.Select(uq => new UserQuizHistoryDto
+        {
+            Id = uq.Id,
+            QuizCategoryTitle = uq.QuizCategoryTitle,
+            QuizTypeTitle = uq.QuizTypeTitle,
+            QuizTitle = uq.QuizTitle,
+            CorrectCount = uq.CorrectCount,
+            MistakeCount = uq.MistakeCount,
+            RegDateTime = uq.RegDateTime,
+            QuestionCount = questionCountDict.TryGetValue(uq.QuizId, out var questionCount) ? questionCount : 0
+        }).ToList();
+
+        return new SuccessListResult<List<UserQuizHistoryDto>>(userQuizHistoryDtos);
     }
+
 
     public async Task<IResult> AddQuizType(AddQuizTypeDto addQuizTypeDto, CurrentUserDto currentUser,
         CancellationToken cancellationToken)
