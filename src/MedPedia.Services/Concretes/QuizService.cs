@@ -228,6 +228,19 @@ public class QuizService : IQuizService, IScopedDependency
     public async Task<IListResult<List<UserQuizHistoryDto>>> GetUserQuizHistory(CurrentUserDto currentUser,
         CancellationToken cancellationToken)
     {
+        var quizQuestionCounts = await (
+            from question in _questionRepository.TableNoTracking
+            group question by question.QuizId
+            into quizGroup
+            select new
+            {
+                QuizId = quizGroup.Key,
+                QuestionCount = quizGroup.Count()
+            }
+        ).ToListAsync(cancellationToken);
+
+        var questionCountDict = quizQuestionCounts.ToDictionary(q => q.QuizId, q => q.QuestionCount);
+
         var userQuizHistories = await (
             from uq in _userQuizRepository.TableNoTracking
             join q in _quizRepository.TableNoTracking on uq.QuizId equals q.Id
@@ -242,7 +255,8 @@ public class QuizService : IQuizService, IScopedDependency
                 QuizTitle = q.Title,
                 CorrectCount = uq.CorrectCount,
                 MistakeCount = uq.MistakeCount,
-                RegDateTime = uq.RegDate
+                RegDateTime = uq.RegDate,
+                QuestionCount = questionCountDict.TryGetValue(q.Id, out var questionCount) ? questionCount : 0
             }
         ).ToListAsync(cancellationToken);
 
