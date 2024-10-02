@@ -253,8 +253,8 @@ public class QuizService : IQuizService, IScopedDependency
                 QuizCategoryTitle = qc.Title,
                 QuizTypeTitle = qt.Title,
                 QuizTitle = q.Title,
-                CorrectCount = uq.CorrectCount,
-                MistakeCount = uq.MistakeCount,
+                uq.CorrectCount,
+                uq.MistakeCount,
                 RegDateTime = uq.RegDate,
                 QuizId = q.Id
             }
@@ -263,6 +263,7 @@ public class QuizService : IQuizService, IScopedDependency
         var userQuizHistoryDtos = userQuizHistories.Select(uq => new UserQuizHistoryDto
         {
             Id = uq.Id,
+            QuizId = uq.QuizId,
             QuizCategoryTitle = uq.QuizCategoryTitle,
             QuizTypeTitle = uq.QuizTypeTitle,
             QuizTitle = uq.QuizTitle,

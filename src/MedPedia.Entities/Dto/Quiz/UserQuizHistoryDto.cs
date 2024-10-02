@@ -5,6 +5,7 @@ namespace MedPedia.Entities.Dto.Quiz;
 public class UserQuizHistoryDto : IDto
 {
     public int Id { get; set; }
+    public int QuizId { get; set; }
 
     public string QuizCategoryTitle { get; set; }
     
