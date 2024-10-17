@@ -14,20 +14,20 @@ namespace MedPedia.Services.Concretes;
 
 public class QuizService : IQuizService, IScopedDependency
 {
-    private readonly IRepository<QuizType> _quizTypeRepository;
+    private readonly IRepository<Lessons> _lessonRepository;
     private readonly IRepository<QuizCategory> _quizCategoryRepository;
     private readonly IRepository<UserQuiz> _userQuizRepository;
     private readonly IRepository<Quiz> _quizRepository;
     private readonly IRepository<Question> _questionRepository;
     private readonly IRepository<Answer> _answerRepository;
 
-    public QuizService(IRepository<Quiz> quizRepository, IRepository<QuizType> quizTypeRepository,
+    public QuizService(IRepository<Quiz> quizRepository, IRepository<Lessons> lessonRepository,
         IRepository<UserQuiz> userQuizRepository, IRepository<QuizCategory> quizCategoryRepository,
         IRepository<Question> questionRepository, IRepository<Answer> answerRepository
     )
     {
         _quizRepository = quizRepository;
-        _quizTypeRepository = quizTypeRepository;
+        _lessonRepository = lessonRepository;
         _userQuizRepository = userQuizRepository;
         _quizCategoryRepository = quizCategoryRepository;
         _questionRepository = questionRepository;
@@ -35,22 +35,22 @@ public class QuizService : IQuizService, IScopedDependency
     }
 
 
-    public async Task<IListResult<List<QuizTypeWithPercentageDto>>> GetAllQuizTypeWithPercentage(
+    public async Task<IListResult<List<LessonsWithPercentageDto>>> GetAllLessonWithPercentage(
         CurrentUserDto currentUser, CancellationToken cancellationToken)
     {
-        var query = from quizType in _quizTypeRepository.TableNoTracking
-            join quizCategory in _quizCategoryRepository.TableNoTracking on quizType.Id equals quizCategory.QuizTypeId
+        var query = from lessons in _lessonRepository.TableNoTracking
+            join quizCategory in _quizCategoryRepository.TableNoTracking on lessons.Id equals quizCategory.LessonId
             join quiz in _quizRepository.TableNoTracking on quizCategory.Id equals quiz.QuizCategoryId into quizzesGroup
             from quiz in quizzesGroup.DefaultIfEmpty()
             join userQuiz in _userQuizRepository.TableNoTracking.Where(uq => uq.UserId == currentUser.UserId) on quiz.Id
                 equals userQuiz.QuizId into userQuizzesGroup
             from userQuiz in userQuizzesGroup.DefaultIfEmpty()
-            group new { quizType, quiz, userQuiz } by quizType
+            group new { lessons, quiz, userQuiz } by lessons
             into g
             select new
             {
-                QuizTypeId = g.Key.Id,
-                QuizTypeTitle = g.Key.Title,
+                LessonId = g.Key.Id,
+                LessonTitle = g.Key.Title,
                 TotalCount = g.Where(q => q.quiz != null)
                     .Select(q => q.quiz.Id)
                     .Distinct()
@@ -62,25 +62,25 @@ public class QuizService : IQuizService, IScopedDependency
             };
 
         var result = await Task.Run(() => query
-            .Select(q => new QuizTypeWithPercentageDto
+            .Select(q => new LessonsWithPercentageDto
             {
-                Id = q.QuizTypeId,
-                Title = q.QuizTypeTitle,
+                Id = q.LessonId,
+                Title = q.LessonTitle,
                 Percentage = q.TotalCount == 0 ? 0 : (double)q.CompletedCount / q.TotalCount * 100
             })
             .OrderByDescending(q => q.Percentage)
             .Take(4)
             .ToList(), cancellationToken);
 
-        return new SuccessListResult<List<QuizTypeWithPercentageDto>>(result);
+        return new SuccessListResult<List<LessonsWithPercentageDto>>(result);
     }
 
 
-    public async Task<IListResult<List<QuizCategoryDto>>> GetAllQuizCategories(int quizTypeId,
+    public async Task<IListResult<List<QuizCategoryDto>>> GetAllQuizCategories(int lessonId,
         CurrentUserDto currentUser, CancellationToken cancellationToken)
     {
         var query = from quizCategory in _quizCategoryRepository.TableNoTracking
-            where quizCategory.QuizTypeId == quizTypeId
+            where quizCategory.LessonId == lessonId
             join quiz in _quizRepository.TableNoTracking on quizCategory.Id equals quiz.QuizCategoryId into quizzesGroup
             from quiz in quizzesGroup.DefaultIfEmpty()
             join userQuiz in _userQuizRepository.TableNoTracking.Where(uq => uq.UserId == currentUser.UserId)
@@ -245,13 +245,13 @@ public class QuizService : IQuizService, IScopedDependency
             from uq in _userQuizRepository.TableNoTracking
             join q in _quizRepository.TableNoTracking on uq.QuizId equals q.Id
             join qc in _quizCategoryRepository.TableNoTracking on q.QuizCategoryId equals qc.Id
-            join qt in _quizTypeRepository.TableNoTracking on qc.QuizTypeId equals qt.Id
+            join qt in _lessonRepository.TableNoTracking on qc.LessonId equals qt.Id
             where uq.UserId == currentUser.UserId
             select new
             {
                 uq.Id,
                 QuizCategoryTitle = qc.Title,
-                QuizTypeTitle = qt.Title,
+                LessonTitle = qt.Title,
                 QuizTitle = q.Title,
                 uq.CorrectCount,
                 uq.MistakeCount,
@@ -265,7 +265,7 @@ public class QuizService : IQuizService, IScopedDependency
             Id = uq.Id,
             QuizId = uq.QuizId,
             QuizCategoryTitle = uq.QuizCategoryTitle,
-            QuizTypeTitle = uq.QuizTypeTitle,
+            LessonTitle = uq.LessonTitle,
             QuizTitle = uq.QuizTitle,
             CorrectCount = uq.CorrectCount,
             MistakeCount = uq.MistakeCount,
@@ -277,29 +277,29 @@ public class QuizService : IQuizService, IScopedDependency
     }
 
 
-    public async Task<IResult> AddQuizType(AddQuizTypeDto addQuizTypeDto, CurrentUserDto currentUser,
+    public async Task<IResult> AddLesson(AddLessonDto addLessonDto, CurrentUserDto currentUser,
         CancellationToken cancellationToken)
     {
-        var quizType = new QuizType
+        var lessons = new Lessons
         {
-            Title = addQuizTypeDto.Title,
+            Title = addLessonDto.Title,
             RegUserId = currentUser.UserId,
             RegDate = DateTime.Now,
             IsDeleted = false
         };
 
-        await _quizTypeRepository.AddAsync(quizType, cancellationToken);
+        await _lessonRepository.AddAsync(lessons, cancellationToken);
 
         return new SuccessResult(Messages.SuccessFully);
     }
 
-    public async Task<IListResult<List<QuizTypeDto>>> GetAllQuizType(CancellationToken cancellationToken)
+    public async Task<IListResult<List<LessonsDto>>> GetAllLesson(CancellationToken cancellationToken)
     {
-        var quizTypes = await _quizTypeRepository.GetListAsync(x => x.IsDeleted == false, cancellationToken);
+        var lessons = await _lessonRepository.GetListAsync(x => x.IsDeleted == false, cancellationToken);
 
-        var quizTypeDtos = quizTypes.Adapt<List<QuizTypeDto>>();
+        var lessonsDtos = lessons.Adapt<List<LessonsDto>>();
 
-        return new SuccessListResult<List<QuizTypeDto>>(quizTypeDtos);
+        return new SuccessListResult<List<LessonsDto>>(lessonsDtos);
     }
 
     public async Task<IResult> AddQuizCategory(AddQuizCategoryDto addQuizCategoryDto, CurrentUserDto currentUser,
@@ -308,7 +308,7 @@ public class QuizService : IQuizService, IScopedDependency
         var quizCategory = new QuizCategory
         {
             Title = addQuizCategoryDto.Title,
-            QuizTypeId = addQuizCategoryDto.QuizTypeId,
+            LessonId = addQuizCategoryDto.LessonId,
             RegUserId = currentUser.UserId,
             RegDate = DateTime.Now,
             IsDeleted = false

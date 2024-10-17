@@ -2,7 +2,7 @@
 
 namespace MedPedia.Entities.Entities;
 
-public class QuizType : BaseEntity
+public class Lessons : BaseEntity
 {
     public string Title { get; set; }
 }
