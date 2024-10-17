@@ -9,7 +9,7 @@ public class UserQuizHistoryDto : IDto
 
     public string QuizCategoryTitle { get; set; }
     
-    public string QuizTypeTitle { get; set; }
+    public string LessonTitle { get; set; }
     
     public string QuizTitle { get; set; }
     

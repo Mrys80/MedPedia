@@ -18,11 +18,11 @@ public class QuizController : BaseController
     }
 
     [HttpGet("[action]")]
-    public async Task<IActionResult> GetAllQuizTypeWithPercentage(
+    public async Task<IActionResult> GetAllLessonWithPercentage(
         CancellationToken cancellationToken)
     {
         var result =
-            await _quizService.GetAllQuizTypeWithPercentage(CurrentUser, cancellationToken);
+            await _quizService.GetAllLessonWithPercentage(CurrentUser, cancellationToken);
 
         if (!result.IsSuccess)
             return BadRequest(result);
@@ -30,10 +30,10 @@ public class QuizController : BaseController
         return Ok(result);
     }
 
-    [HttpGet("[action]/{quizTypeId:Int}")]
-    public async Task<IActionResult> GetAllQuizCategories(int quizTypeId, CancellationToken cancellationToken)
+    [HttpGet("[action]/{lessonId:Int}")]
+    public async Task<IActionResult> GetAllQuizCategories(int lessonId, CancellationToken cancellationToken)
     {
-        var result = await _quizService.GetAllQuizCategories(quizTypeId, CurrentUser, cancellationToken);
+        var result = await _quizService.GetAllQuizCategories(lessonId, CurrentUser, cancellationToken);
 
         if (!result.IsSuccess)
             return BadRequest(result);
@@ -87,10 +87,10 @@ public class QuizController : BaseController
     }
 
     [HttpPost("[action]")]
-    public async Task<IActionResult> AddQuizType([FromBody] AddQuizTypeDto addQuizTypeDto,
+    public async Task<IActionResult> AddLesson([FromBody] AddLessonDto addLessonDto,
         CancellationToken cancellationToken)
     {
-        var result = await _quizService.AddQuizType(addQuizTypeDto, CurrentUser, cancellationToken);
+        var result = await _quizService.AddLesson(addLessonDto, CurrentUser, cancellationToken);
 
         if (!result.IsSuccess)
             return BadRequest(result);
@@ -99,9 +99,9 @@ public class QuizController : BaseController
     }
 
     [HttpGet("[action]")]
-    public async Task<IActionResult> GetAllQuizType(CancellationToken cancellationToken)
+    public async Task<IActionResult> GetAllLesson(CancellationToken cancellationToken)
     {
-        var result = await _quizService.GetAllQuizType(cancellationToken);
+        var result = await _quizService.GetAllLesson(cancellationToken);
 
         if (!result.IsSuccess)
             return BadRequest(result);

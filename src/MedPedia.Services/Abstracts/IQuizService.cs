@@ -6,10 +6,10 @@ namespace MedPedia.Services.Abstracts;
 
 public interface IQuizService
 {
-    Task<IListResult<List<QuizTypeWithPercentageDto>>> GetAllQuizTypeWithPercentage(CurrentUserDto currentUser,
+    Task<IListResult<List<LessonsWithPercentageDto>>> GetAllLessonWithPercentage(CurrentUserDto currentUser,
         CancellationToken cancellationToken);
 
-    Task<IListResult<List<QuizCategoryDto>>> GetAllQuizCategories(int quizTypeId,CurrentUserDto currentUser, CancellationToken cancellationToken);
+    Task<IListResult<List<QuizCategoryDto>>> GetAllQuizCategories(int lessonId,CurrentUserDto currentUser, CancellationToken cancellationToken);
 
     Task<IListResult<List<QuizDto>>> GetAllQuiz(int quizCategoryId,CurrentUserDto currentUser, CancellationToken cancellationToken);
 
@@ -21,10 +21,10 @@ public interface IQuizService
     Task<IListResult<List<UserQuizHistoryDto>>> GetUserQuizHistory(CurrentUserDto currentUser,
         CancellationToken cancellationToken);
 
-    Task<IResult> AddQuizType(AddQuizTypeDto addQuizTypeDto, CurrentUserDto currentUser,
+    Task<IResult> AddLesson(AddLessonDto addLessonDto, CurrentUserDto currentUser,
         CancellationToken cancellationToken);
 
-    Task<IListResult<List<QuizTypeDto>>> GetAllQuizType(
+    Task<IListResult<List<LessonsDto>>> GetAllLesson(
         CancellationToken cancellationToken);
 
     Task<IResult> AddQuizCategory(AddQuizCategoryDto addQuizCategoryDto,CurrentUserDto currentUser,

@@ -2,9 +2,7 @@
 
 namespace MedPedia.Entities.Dto.Quiz;
 
-public class QuizTypeDto:IDto
+public class AddLessonDto : IDto
 {
-    public int Id { get; set; }
-    
     public string Title { get; set; }
 }
