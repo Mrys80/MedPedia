@@ -326,6 +326,7 @@ public class QuizService : IQuizService, IScopedDependency
         {
             Title = addQuizDto.Title,
             QuizCategoryId = addQuizDto.QuizCategoryId,
+            QuizTypeId = addQuizDto.QuizType,
             RegUserId = currentUser.UserId,
             RegDate = DateTime.Now,
             IsDeleted = false
