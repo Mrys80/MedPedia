@@ -763,6 +763,32 @@ namespace Teb.Data.Migrations
                     b.ToTable("ExperimentInformations", "dbo");
                 });
 
+            modelBuilder.Entity("MedPedia.Entities.Entities.Lessons", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
+
+                    b.Property<bool>("IsDeleted")
+                        .HasColumnType("bit");
+
+                    b.Property<DateTime>("RegDate")
+                        .HasColumnType("datetime2");
+
+                    b.Property<int>("RegUserId")
+                        .HasColumnType("int");
+
+                    b.Property<string>("Title")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.HasKey("Id");
+
+                    b.ToTable("Lessons", "dbo");
+                });
+
             modelBuilder.Entity("MedPedia.Entities.Entities.MartindaleClassification", b =>
                 {
                     b.Property<int>("Id")
@@ -994,7 +1020,7 @@ namespace Teb.Data.Migrations
                     b.Property<bool>("IsDeleted")
                         .HasColumnType("bit");
 
-                    b.Property<int>("QuizTypeId")
+                    b.Property<int>("LessonId")
                         .HasColumnType("int");
 
                     b.Property<DateTime>("RegDate")
@@ -1010,32 +1036,6 @@ namespace Teb.Data.Migrations
                     b.HasKey("Id");
 
                     b.ToTable("QuizCategories", "dbo");
-                });
-
-            modelBuilder.Entity("MedPedia.Entities.Entities.QuizType", b =>
-                {
-                    b.Property<int>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("int");
-
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
-
-                    b.Property<bool>("IsDeleted")
-                        .HasColumnType("bit");
-
-                    b.Property<DateTime>("RegDate")
-                        .HasColumnType("datetime2");
-
-                    b.Property<int>("RegUserId")
-                        .HasColumnType("int");
-
-                    b.Property<string>("Title")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
-
-                    b.HasKey("Id");
-
-                    b.ToTable("QuizTypes", "dbo");
                 });
 
             modelBuilder.Entity("MedPedia.Entities.Entities.Session", b =>
