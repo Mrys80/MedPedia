@@ -994,6 +994,9 @@ namespace Teb.Data.Migrations
                     b.Property<int>("QuizCategoryId")
                         .HasColumnType("int");
 
+                    b.Property<int>("QuizTypeId")
+                        .HasColumnType("int");
+
                     b.Property<DateTime>("RegDate")
                         .HasColumnType("datetime2");
 
@@ -1036,6 +1039,36 @@ namespace Teb.Data.Migrations
                     b.HasKey("Id");
 
                     b.ToTable("QuizCategories", "dbo");
+                });
+
+            modelBuilder.Entity("MedPedia.Entities.Entities.QuizType", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
+
+                    b.Property<string>("Image")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<bool>("IsDeleted")
+                        .HasColumnType("bit");
+
+                    b.Property<DateTime>("RegDate")
+                        .HasColumnType("datetime2");
+
+                    b.Property<int>("RegUserId")
+                        .HasColumnType("int");
+
+                    b.Property<string>("Title")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.HasKey("Id");
+
+                    b.ToTable("QuizTypes", "dbo");
                 });
 
             modelBuilder.Entity("MedPedia.Entities.Entities.Session", b =>

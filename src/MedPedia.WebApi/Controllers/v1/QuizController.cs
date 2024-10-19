@@ -41,16 +41,17 @@ public class QuizController : BaseController
         return Ok(result);
     }
 
-    [HttpGet("[action]/{quizCategoryId:Int}")]
-    public async Task<IActionResult> GetAllQuiz(int quizCategoryId, CancellationToken cancellationToken)
+    [HttpPost("[action]")]
+    public async Task<IActionResult> GetAllQuiz([FromBody] QuizTypeDto quizTypeDto, CancellationToken cancellationToken)
     {
-        var result = await _quizService.GetAllQuiz(quizCategoryId, CurrentUser, cancellationToken);
+        var result = await _quizService.GetAllQuiz(quizTypeDto, CurrentUser, cancellationToken);
 
         if (!result.IsSuccess)
             return BadRequest(result);
 
         return Ok(result);
     }
+
 
     [HttpGet("[action]/{quizId:Int}")]
     public async Task<IActionResult> GetQuestionsByQuizId(int quizId, CancellationToken cancellationToken)
