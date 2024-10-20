@@ -146,52 +146,79 @@ public class QuizService(
     }
 
 
-    public async Task<IListResult<List<QuestionDto>>> GetQuestionsByQuizId(int quizId,
-        CancellationToken cancellationToken)
-    {
-        var questions = await questionRepository.TableNoTracking
-            .Where(q => q.QuizId == quizId)
-            .Select(q => new
-            {
-                q.Id,
-                q.Title
-            })
-            .Distinct()
-            .ToListAsync(cancellationToken);
+    public async Task<IListResult<List<QuestionDto>>> GetQuestionsByQuizId(int quizId, CancellationToken cancellationToken)
+{
+    var questions = await questionRepository.TableNoTracking
+        .Where(q => q.QuizId == quizId)
+        .Select(q => new
+        {
+            q.Id,
+            q.Title,
+            q.Hint
+        })
+        .Distinct()
+        .ToListAsync(cancellationToken);
 
-        var questionIds = questions.Select(q => q.Id).ToList();
-        var answers = await answerRepository.TableNoTracking
-            .Where(a => questionIds.Contains(a.QuestionId))
-            .Select(a => new
-            {
-                a.Id,
-                a.QuestionId,
-                a.Title,
-                a.IsCorrect,
-                a.Hint
-            })
-            .ToListAsync(cancellationToken);
+    var questionIds = questions.Select(q => q.Id).ToList();
 
-        var questionDtos = questions
-            .Select(q => new QuestionDto
-            {
-                Id = q.Id,
-                Question = q.Title,
-                Answers = answers
-                    .Where(a => a.QuestionId == q.Id)
-                    .Select(a => new AnswerDto
+    var answers = await answerRepository.TableNoTracking
+        .Where(a => questionIds.Contains(a.QuestionId))
+        .Select(a => new
+        {
+            a.Id,
+            a.QuestionId,
+            a.Title,
+            a.IsCorrect 
+        })
+        .ToListAsync(cancellationToken);
+
+    var questionDetails = await detailRepository.TableNoTracking
+        .Where(qd => questionIds.Contains(qd.QuestionId))
+        .GroupBy(qd => new { qd.QuestionId, qd.AnswerId })
+        .Select(group => new
+        {
+            group.Key.QuestionId,
+            group.Key.AnswerId,
+            Count = group.Count()
+        })
+        .ToListAsync(cancellationToken);
+
+    var totalResponsesPerQuestion = questionDetails
+        .GroupBy(qd => qd.QuestionId)
+        .Select(group => new
+        {
+            QuestionId = group.Key,
+            TotalResponses = group.Sum(g => g.Count)
+        })
+        .ToList();
+
+    var questionDtos = questions
+        .Select(q => new QuestionDto
+        {
+            Id = q.Id,
+            Question = q.Title,
+            Hint = q.Hint,
+            Answers = answers
+                .Where(a => a.QuestionId == q.Id)
+                .Select(a => {
+                    var answerDetail = questionDetails.FirstOrDefault(qd => qd.QuestionId == q.Id && qd.AnswerId == a.Id);
+                    var totalResponses = totalResponsesPerQuestion.FirstOrDefault(tr => tr.QuestionId == q.Id)?.TotalResponses ?? 0;
+                    var percentage = totalResponses > 0 ? (answerDetail?.Count ?? 0) * 100 / totalResponses : 0;
+
+                    return new AnswerDto
                     {
                         Id = a.Id,
                         Title = a.Title,
                         IsCorrect = a.IsCorrect,
-                        Hint = a.Hint
-                    })
-                    .ToList()
-            })
-            .ToList();
+                        Percentage = percentage.ToString()
+                    };
+                })
+                .ToList()
+        })
+        .ToList();
 
-        return new SuccessListResult<List<QuestionDto>>(questionDtos);
-    }
+    return new SuccessListResult<List<QuestionDto>>(questionDtos);
+}
 
 
     public async Task<IResult> UserQuizAdd(UserQuizAddDto userQuizAddDto, CurrentUserDto currentUser,
@@ -271,7 +298,9 @@ public class QuizService(
             LessonTitle = uq.LessonTitle,
             QuizTitle = uq.QuizTitle,
             CorrectCount = uq.CorrectCount,
+            None = uq.None,
             MistakeCount = uq.MistakeCount,
+            
             RegDateTime = uq.RegDateTime,
             QuestionCount = questionCountDict.TryGetValue(uq.QuizId, out var questionCount) ? questionCount : 0
         }).ToList();
@@ -347,6 +376,7 @@ public class QuizService(
         {
             QuizId = addQuestionDto.QuizId,
             Title = addQuestionDto.Title,
+            Hint = addQuestionDto.Hint,
             RegUserId = currentUser.UserId,
             RegDate = DateTime.Now,
             IsDeleted = false
@@ -359,7 +389,6 @@ public class QuizService(
                      QuestionId = question.Id,
                      Title = answerDto.Title,
                      IsCorrect = answerDto.IsCorrect,
-                     Hint = answerDto.Hint,
                      RegUserId = currentUser.UserId,
                      RegDate = DateTime.Now,
                      IsDeleted = false

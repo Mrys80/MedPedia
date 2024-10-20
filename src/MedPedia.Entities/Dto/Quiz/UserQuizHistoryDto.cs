@@ -17,6 +17,7 @@ public class UserQuizHistoryDto : IDto
     
     public int MistakeCount { get; set; }
     public int QuestionCount { get; set; }
+    public int None { get; set; }
     
     public DateTime RegDateTime { get; set; }
 }

@@ -7,4 +7,6 @@ public class Question : BaseEntity
     public string Title { get; set; }
     
     public int QuizId { get; set; }
+    public string Hint { get; set; }
+
 }

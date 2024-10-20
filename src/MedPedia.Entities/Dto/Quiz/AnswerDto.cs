@@ -7,6 +7,6 @@ public class AnswerDto:IDto
     public int Id { get; set; }
     public string Title { get; set; }
     public bool IsCorrect { get; set; }
-    public string Hint { get; set; }
+    public string Percentage { get; set; }
     
 }

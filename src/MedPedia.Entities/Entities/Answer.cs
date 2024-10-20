@@ -10,5 +10,4 @@ public class Answer : BaseEntity
     
     public string Title { get; set; }
     
-    public string Hint { get; set; }
 }
