@@ -5,6 +5,7 @@ using MedPedia.Common.Utilities.Results;
 using MedPedia.Entities.Dto;
 using MedPedia.Entities.Dto.Quiz;
 using MedPedia.Entities.Entities;
+using MedPedia.Entities.Enums;
 using MedPedia.Services.Abstracts;
 using Microsoft.EntityFrameworkCore;
 using Teb.Data.Abstracts;
@@ -18,7 +19,9 @@ public class QuizService(
     IRepository<UserQuiz> userQuizRepository,
     IRepository<QuizCategory> quizCategoryRepository,
     IRepository<Question> questionRepository,
-    IRepository<Answer> answerRepository)
+    IRepository<Answer> answerRepository,
+    IRepository<QuestionDetail> detailRepository
+)
     : IQuizService, IScopedDependency
 {
     public async Task<IListResult<List<LessonsWithPercentageDto>>> GetAllLessonWithPercentage(
@@ -197,15 +200,29 @@ public class QuizService(
         var userQuizEntity = new UserQuiz
         {
             QuizId = userQuizAddDto.QuizId,
-            CorrectCount = userQuizAddDto.CorrectCount,
+            CorrectCount = userQuizAddDto.QuestionDetails.Count(x => x.Status == Status.Correct),
             UserId = currentUser.UserId,
-            MistakeCount = userQuizAddDto.MistakeCount,
+            MistakeCount = userQuizAddDto.QuestionDetails.Count(x => x.Status == Status.InCorrect),
+            None = userQuizAddDto.QuestionDetails.Count(x => x.Status == Status.None),
             RegUserId = currentUser.UserId,
             RegDate = DateTime.Now,
             IsDeleted = false
         };
 
         await userQuizRepository.AddAsync(userQuizEntity, cancellationToken);
+
+        var questionDetails = userQuizAddDto.QuestionDetails
+            .Select(q => new QuestionDetail
+            {
+                QuizId = userQuizAddDto.QuizId,
+                QuestionId = q.QuestionId,
+                AnswerId = q.AnswerId,
+                Status = q.Status,
+                UserId = currentUser.UserId
+            }).ToList();
+
+        await detailRepository.AddRangeAsync(questionDetails, cancellationToken);
+
 
         return new SuccessResult(Messages.SuccessFully);
     }
@@ -240,6 +257,7 @@ public class QuizService(
                 QuizTitle = q.Title,
                 uq.CorrectCount,
                 uq.MistakeCount,
+                uq.None,
                 RegDateTime = uq.RegDate,
                 QuizId = q.Id
             }

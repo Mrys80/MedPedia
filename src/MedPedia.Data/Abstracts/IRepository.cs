@@ -38,4 +38,5 @@ public interface IRepository<TEntity> where TEntity : class, IEntity
     Task UpdateAsync(TEntity entity, CancellationToken cancellationToken, bool saveNow = true);
     void UpdateRange(IEnumerable<TEntity> entities, bool saveNow = true);
     Task UpdateRangeAsync(IEnumerable<TEntity> entities, CancellationToken cancellationToken, bool saveNow = true);
+
 }

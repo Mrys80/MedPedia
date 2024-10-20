@@ -98,6 +98,7 @@ public class Repository<TEntity> : IRepository<TEntity>, IScopedDependency
         if (saveNow)
             await DbContext.SaveChangesAsync(cancellationToken);
     }
+    
 
     public virtual async Task DeleteAsync(TEntity entity, CancellationToken cancellationToken, bool saveNow = true)
     {

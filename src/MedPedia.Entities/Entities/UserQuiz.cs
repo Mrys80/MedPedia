@@ -11,4 +11,6 @@ public class UserQuiz : BaseEntity
     public int CorrectCount { get; set; }
     
     public int MistakeCount { get; set; }
+    
+    public int None { get; set; }
 }

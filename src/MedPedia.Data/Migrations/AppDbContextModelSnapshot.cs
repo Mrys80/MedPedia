@@ -980,6 +980,43 @@ namespace Teb.Data.Migrations
                     b.ToTable("Questions", "dbo");
                 });
 
+            modelBuilder.Entity("MedPedia.Entities.Entities.QuestionDetail", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
+
+                    b.Property<int>("AnswerId")
+                        .HasColumnType("int");
+
+                    b.Property<bool>("IsDeleted")
+                        .HasColumnType("bit");
+
+                    b.Property<int>("QuestionId")
+                        .HasColumnType("int");
+
+                    b.Property<int>("QuizId")
+                        .HasColumnType("int");
+
+                    b.Property<DateTime>("RegDate")
+                        .HasColumnType("datetime2");
+
+                    b.Property<int>("RegUserId")
+                        .HasColumnType("int");
+
+                    b.Property<int>("Status")
+                        .HasColumnType("int");
+
+                    b.Property<int>("UserId")
+                        .HasColumnType("int");
+
+                    b.HasKey("Id");
+
+                    b.ToTable("QuestionDetails", "dbo");
+                });
+
             modelBuilder.Entity("MedPedia.Entities.Entities.Quiz", b =>
                 {
                     b.Property<int>("Id")
@@ -1138,6 +1175,9 @@ namespace Teb.Data.Migrations
                         .HasColumnType("bit");
 
                     b.Property<int>("MistakeCount")
+                        .HasColumnType("int");
+
+                    b.Property<int>("None")
                         .HasColumnType("int");
 
                     b.Property<int>("QuizId")

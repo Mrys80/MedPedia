@@ -6,7 +6,5 @@ public class UserQuizAddDto : IDto
 {
     public int QuizId { get; set; }
     
-    public int CorrectCount { get; set; }
-    
-    public int MistakeCount { get; set; }
+    public List<QuestionDetailDto> QuestionDetails { get; set; }
 }
