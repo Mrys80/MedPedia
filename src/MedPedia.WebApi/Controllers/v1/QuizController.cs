@@ -42,7 +42,7 @@ public class QuizController : BaseController
     }
 
     [HttpGet("[action]")]
-    public async Task<IActionResult> GetAllQuiz([FromBody] QuizTypeDto quizTypeDto, CancellationToken cancellationToken)
+    public async Task<IActionResult> GetAllQuiz([FromQuery] QuizTypeDto quizTypeDto, CancellationToken cancellationToken)
     {
         var result = await _quizService.GetAllQuiz(quizTypeDto, CurrentUser, cancellationToken);
 
