@@ -291,7 +291,7 @@ public class QuizService(
         ).ToListAsync(cancellationToken);
 
         var userQuizHistoryDtos = userQuizHistories
-            .OrderBy(uq => uq.RegDateTime)
+            .OrderByDescending(uq => uq.RegDateTime)
             .Select(uq => new UserQuizHistoryDto
             {
                 Id = uq.Id,
@@ -305,6 +305,7 @@ public class QuizService(
                 RegDateTime = uq.RegDateTime,
                 QuestionCount = questionCountDict.TryGetValue(uq.QuizId, out var questionCount) ? questionCount : 0
             }).ToList();
+
 
         return new SuccessListResult<List<UserQuizHistoryDto>>(userQuizHistoryDtos);
     }
