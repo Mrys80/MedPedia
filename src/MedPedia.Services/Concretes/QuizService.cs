@@ -194,7 +194,7 @@ public class QuizService(
 
     var questionDtos = questions
         .Select(q => new QuestionDto
-        {
+        { 
             Id = q.Id,
             Question = q.Title,
             Hint = q.Hint,
@@ -290,20 +290,21 @@ public class QuizService(
             }
         ).ToListAsync(cancellationToken);
 
-        var userQuizHistoryDtos = userQuizHistories.Select(uq => new UserQuizHistoryDto
-        {
-            Id = uq.Id,
-            QuizId = uq.QuizId,
-            QuizCategoryTitle = uq.QuizCategoryTitle,
-            LessonTitle = uq.LessonTitle,
-            QuizTitle = uq.QuizTitle,
-            CorrectCount = uq.CorrectCount,
-            None = uq.None,
-            MistakeCount = uq.MistakeCount,
-            
-            RegDateTime = uq.RegDateTime,
-            QuestionCount = questionCountDict.TryGetValue(uq.QuizId, out var questionCount) ? questionCount : 0
-        }).ToList();
+        var userQuizHistoryDtos = userQuizHistories
+            .OrderBy(uq => uq.RegDateTime)
+            .Select(uq => new UserQuizHistoryDto
+            {
+                Id = uq.Id,
+                QuizId = uq.QuizId,
+                QuizCategoryTitle = uq.QuizCategoryTitle,
+                LessonTitle = uq.LessonTitle,
+                QuizTitle = uq.QuizTitle,
+                CorrectCount = uq.CorrectCount,
+                None = uq.None,
+                MistakeCount = uq.MistakeCount,
+                RegDateTime = uq.RegDateTime,
+                QuestionCount = questionCountDict.TryGetValue(uq.QuizId, out var questionCount) ? questionCount : 0
+            }).ToList();
 
         return new SuccessListResult<List<UserQuizHistoryDto>>(userQuizHistoryDtos);
     }
