@@ -7,4 +7,6 @@ public class QuizType : BaseEntity
     public string Title { get; set; }
     
     public string? Image { get; set; }
+    
+    public int? Minutes { get; set; }
 }

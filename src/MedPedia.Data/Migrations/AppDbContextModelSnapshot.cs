@@ -1092,6 +1092,9 @@ namespace Teb.Data.Migrations
                     b.Property<bool>("IsDeleted")
                         .HasColumnType("bit");
 
+                    b.Property<int?>("Minutes")
+                        .HasColumnType("int");
+
                     b.Property<DateTime>("RegDate")
                         .HasColumnType("datetime2");
 
