@@ -138,6 +138,7 @@ public class QuizService(
         {
             Id = q.Id,
             Title = q.Title,
+            Minutes = q.Minutes,
             IsDone = userQuizIds.Contains(q.Id),
             QuestionCount = questionCountDict.TryGetValue(q.Id, out var value) ? value : 0
         }).ToList();
