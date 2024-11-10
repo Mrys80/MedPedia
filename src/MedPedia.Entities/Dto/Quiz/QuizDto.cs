@@ -10,4 +10,6 @@ public class QuizDto : IDto
     public int QuestionCount { get; set; }
 
     public bool IsDone { get; set; }
+    
+    public int? Minutes { get; set; }
 }

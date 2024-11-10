@@ -8,4 +8,6 @@ public class Quiz:BaseEntity
     
     public int QuizTypeId { get; set; }
     public string Title { get; set; }
+    
+    public int? Minutes { get; set; }
 }

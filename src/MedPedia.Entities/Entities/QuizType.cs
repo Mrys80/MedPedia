@@ -8,5 +8,4 @@ public class QuizType : BaseEntity
     
     public string? Image { get; set; }
     
-    public int? Minutes { get; set; }
 }
