@@ -8,6 +8,4 @@ public class QuizTypeDto : IDto
     
     public int QuizCategoryId { get; set; }
     
-    public int? Minutes { get; set; }
-    
 }

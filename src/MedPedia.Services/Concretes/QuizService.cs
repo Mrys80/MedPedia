@@ -138,9 +138,9 @@ public class QuizService(
         {
             Id = q.Id,
             Title = q.Title,
-            Minutes = q.Minutes,
             IsDone = userQuizIds.Contains(q.Id),
-            QuestionCount = questionCountDict.TryGetValue(q.Id, out var value) ? value : 0
+            QuestionCount = questionCountDict.TryGetValue(q.Id, out var value) ? value : 0,
+            Minutes = q.Minutes
         }).ToList();
 
         return new SuccessListResult<List<QuizDto>>(quizDtos);
