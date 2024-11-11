@@ -9,8 +9,6 @@ using MedPedia.Entities.Enums;
 using MedPedia.Services.Abstracts;
 using Microsoft.EntityFrameworkCore;
 using Teb.Data.Abstracts;
-using UserQuizHistoryDto = MedPedia.Entities.Dto.Quiz.UserQuizHistoryDto;
-
 namespace MedPedia.Services.Concretes;
 
 public class QuizService(
