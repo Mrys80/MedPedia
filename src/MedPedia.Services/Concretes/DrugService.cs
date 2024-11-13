@@ -416,4 +416,35 @@ public class DrugService : IDrugService, IDrugCategoryService, IScopedDependency
             return string.Compare(x, y, cultureInfo, CompareOptions.None);
         }
     }
+
+
+    private static Dictionary<string, string> GetItemPersianTitles()
+    {
+        return new Dictionary<string, string>
+        {
+            { "PharmacologicalClassification", "طبقه‌بندی داروشناسی" },
+            { "TherapeuticClassification", "طبقه‌بندی درمانی" },
+            { "MartindaleClassification", "طبقه‌بندی مارتین‌دیل" },
+            { "PregnancyClassification", "طبقه‌بندی در دوران بارداری" },
+            { "MethodOfUse", "روش مصرف" },
+            { "Indication", "موارد مصرف" },
+            { "sideEffects", "عوارض جانبی" },
+            { "MechanismOfEffect", "مکانیزم اثر" },
+            { "BeginningOfEffect", "شروع اثر" },
+            { "PeakOfEffect", "اوج اثر" },
+            { "Pharmacokinetics", "فارماکوکینتیک" },
+            { "PrescriptionIndications", "موارد تجویز" },
+            { "Contraindicated", "موارد منع مصرف" },
+            { "IncreaseEffect", "افزایش اثر" },
+            { "ReduceEffect", "کاهش اثر" },
+            { "AvoidInteractions", "اجتناب از تداخل‌ها" },
+            { "FoodInteractions", "تداخل‌های غذایی" },
+            { "DrugInteractions", "تداخل‌های دارویی" },
+            { "PoisoningAndTreatment", "مسمومیت و درمان" },
+            { "Precautions", "احتیاطات" },
+            { "SpecialAttention", "توجه ویژه" },
+            { "UseInBreastfeedingAndChildren", "مصرف در دوران شیردهی و کودکان" },
+            { "Education", "آموزش" }
+        };
+    }
 }
