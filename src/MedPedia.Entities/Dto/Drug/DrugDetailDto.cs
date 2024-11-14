@@ -35,6 +35,7 @@ public class DrugDetailDto : IDto
     public KeyValueDto UseInBreastfeedingAndChildren { get; set; }
     public KeyValueDto Education { get; set; }
     
-    public List<PharmaceuticalFormsGetDto> forms { get; set; }
-    public KeyValueDto sideEffects { get; set; }
+    public List<PharmaceuticalFormsGetDto> Forms { get; set; }
+    
+    public KeyValueDto SideEffects { get; set; }
 }

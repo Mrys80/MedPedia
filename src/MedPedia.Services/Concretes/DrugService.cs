@@ -320,30 +320,25 @@ public class DrugService : IDrugService, IDrugCategoryService, IScopedDependency
     {
         var persianTitles = GetItemPersianTitles();
 
-        var drugDetail = await
-        (
-            from drug in _drugRepository.TableNoTracking
-            join drugCategory in _drugCategoryRepository.TableNoTracking on drug.DrugCategoryId equals drugCategory.Id
-            join drugInformation in _drugInformationRepository.TableNoTracking on drug.Id equals drugInformation.DrugId
-            join pharmacologicalClassification in _pharmacologicalClassificationRepository.TableNoTracking on
-                drugInformation.PharmacologicalClassificationId equals pharmacologicalClassification.Id
-            join therapeuticClassification in _therapeuticClassificationRepository.TableNoTracking on drugInformation
-                .TherapeuticClassificationId equals therapeuticClassification.Id
-            join martindaleClassification in _martindaleRepository.TableNoTracking on drugInformation
-                .MartindaleClassificationId equals martindaleClassification.Id
-            join pregnancyClassification in _classificationOfPregnancyRepository.TableNoTracking on drugInformation
-                .PregnancyClassificationId equals pregnancyClassification.Id
-            join methodOfUse in _methodOfUseRepository.TableNoTracking on drugInformation.MethodOfUseId equals
-                methodOfUse.Id
-            where drug.Id == drugId &&
-                  drug.IsDeleted == false &&
-                  drugCategory.IsDeleted == false &&
-                  drugInformation.IsDeleted == false &&
-                  pharmacologicalClassification.IsDeleted == false &&
-                  therapeuticClassification.IsDeleted == false &&
-                  martindaleClassification.IsDeleted == false &&
-                  pregnancyClassification.IsDeleted == false &&
-                  methodOfUse.IsDeleted == false
+        var drugDetailQuery =
+            from drug in _drugRepository.TableNoTracking.Where(d => d.Id == drugId && !d.IsDeleted)
+            join drugCategory in _drugCategoryRepository.TableNoTracking.Where(dc => !dc.IsDeleted) on
+                drug.DrugCategoryId equals drugCategory.Id
+            join drugInformation in _drugInformationRepository.TableNoTracking.Where(di => !di.IsDeleted) on drug.Id
+                equals drugInformation.DrugId
+            join pharmacologicalClassification in _pharmacologicalClassificationRepository.TableNoTracking.Where(pc =>
+                    !pc.IsDeleted)
+                on drugInformation.PharmacologicalClassificationId equals pharmacologicalClassification.Id
+            join therapeuticClassification in _therapeuticClassificationRepository.TableNoTracking.Where(tc =>
+                    !tc.IsDeleted)
+                on drugInformation.TherapeuticClassificationId equals therapeuticClassification.Id
+            join martindaleClassification in _martindaleRepository.TableNoTracking.Where(mc => !mc.IsDeleted)
+                on drugInformation.MartindaleClassificationId equals martindaleClassification.Id
+            join pregnancyClassification in _classificationOfPregnancyRepository.TableNoTracking.Where(pc =>
+                    !pc.IsDeleted)
+                on drugInformation.PregnancyClassificationId equals pregnancyClassification.Id
+            join methodOfUse in _methodOfUseRepository.TableNoTracking.Where(mu => !mu.IsDeleted)
+                on drugInformation.MethodOfUseId equals methodOfUse.Id
             select new DrugDetailDto
             {
                 FaTitle = drug.FaTitle,
@@ -352,71 +347,133 @@ public class DrugService : IDrugService, IDrugCategoryService, IScopedDependency
                 CategoryEnTitle = drugCategory.EnTitle,
                 CategoryFaTitle = drugCategory.FaTitle,
                 PharmacologicalClassification = new KeyValueDto
-                    { Key = "", Value = pharmacologicalClassification.Title },
-                TherapeuticClassification = new KeyValueDto { Key = "", Value = therapeuticClassification.Title },
-                MartindaleClassification = new KeyValueDto { Key = "", Value = martindaleClassification.Title },
-                PregnancyClassification = new KeyValueDto { Key = "", Value = pregnancyClassification.Title },
-                MethodOfUse = new KeyValueDto { Key = "", Value = methodOfUse.Title },
-                Indication = new KeyValueDto { Key = "", Value = drugInformation.Indication },
-                sideEffects = new KeyValueDto { Key = "", Value = drugInformation.SideEffect },
-                MechanismOfEffect = new KeyValueDto { Key = "", Value = drugInformation.MechanismOfEffect },
-                BeginningOfEffect = new KeyValueDto { Key = "", Value = drugInformation.BeginningOfEffect },
-                PeakOfEffect = new KeyValueDto { Key = "", Value = drugInformation.PeakOfEffect },
-                Pharmacokinetics = new KeyValueDto { Key = "", Value = drugInformation.Pharmacodynamics },
-                PrescriptionIndications = new KeyValueDto { Key = "", Value = drugInformation.PrescriptionIndications },
-                Contraindicated = new KeyValueDto { Key = "", Value = drugInformation.Contraindicated },
-                IncreaseEffect = new KeyValueDto { Key = "", Value = drugInformation.IncreaseEffect },
-                ReduceEffect = new KeyValueDto { Key = "", Value = drugInformation.ReduceEffect },
-                AvoidInteractions = new KeyValueDto { Key = "", Value = drugInformation.AvoidInteractions },
-                FoodInteractions = new KeyValueDto { Key = "", Value = drugInformation.FoodInteractions },
-                DrugInteractions = new KeyValueDto { Key = "", Value = drugInformation.DrugInteractions },
-                PoisoningAndTreatment = new KeyValueDto { Key = "", Value = drugInformation.PoisoningAndTreatment },
-                Precautions = new KeyValueDto { Key = "", Value = drugInformation.Precautions },
-                SpecialAttention = new KeyValueDto { Key = "", Value = drugInformation.SpecialAttention },
+                {
+                    Key = persianTitles["PharmacologicalClassification"],
+                    Value = pharmacologicalClassification.Title
+                },
+                TherapeuticClassification = new KeyValueDto
+                {
+                    Key = persianTitles["TherapeuticClassification"],
+                    Value = therapeuticClassification.Title
+                },
+                MartindaleClassification = new KeyValueDto
+                {
+                    Key = persianTitles["MartindaleClassification"],
+                    Value = martindaleClassification.Title
+                },
+                PregnancyClassification = new KeyValueDto
+                {
+                    Key = persianTitles["PregnancyClassification"],
+                    Value = pregnancyClassification.Title
+                },
+                MethodOfUse = new KeyValueDto
+                {
+                    Key = persianTitles["MethodOfUse"],
+                    Value = methodOfUse.Title
+                },
+                Indication = new KeyValueDto
+                {
+                    Key = persianTitles["Indication"],
+                    Value = drugInformation.Indication
+                },
+                SideEffects = new KeyValueDto
+                {
+                    Key = persianTitles["sideEffects"],
+                    Value = drugInformation.SideEffect
+                },
+                MechanismOfEffect = new KeyValueDto
+                {
+                    Key = persianTitles["MechanismOfEffect"],
+                    Value = drugInformation.MechanismOfEffect
+                },
+                BeginningOfEffect = new KeyValueDto
+                {
+                    Key = persianTitles["BeginningOfEffect"],
+                    Value = drugInformation.BeginningOfEffect
+                },
+                PeakOfEffect = new KeyValueDto
+                {
+                    Key = persianTitles["PeakOfEffect"],
+                    Value = drugInformation.PeakOfEffect
+                },
+                Pharmacokinetics = new KeyValueDto
+                {
+                    Key = persianTitles["Pharmacokinetics"],
+                    Value = drugInformation.Pharmacodynamics
+                },
+                PrescriptionIndications = new KeyValueDto
+                {
+                    Key = persianTitles["PrescriptionIndications"],
+                    Value = drugInformation.PrescriptionIndications
+                },
+                Contraindicated = new KeyValueDto
+                {
+                    Key = persianTitles["Contraindicated"],
+                    Value = drugInformation.Contraindicated
+                },
+                IncreaseEffect = new KeyValueDto
+                {
+                    Key = persianTitles["IncreaseEffect"],
+                    Value = drugInformation.IncreaseEffect
+                },
+                ReduceEffect = new KeyValueDto
+                {
+                    Key = persianTitles["ReduceEffect"],
+                    Value = drugInformation.ReduceEffect
+                },
+                AvoidInteractions = new KeyValueDto
+                {
+                    Key = persianTitles["AvoidInteractions"],
+                    Value = drugInformation.AvoidInteractions
+                },
+                FoodInteractions = new KeyValueDto
+                {
+                    Key = persianTitles["FoodInteractions"],
+                    Value = drugInformation.FoodInteractions
+                },
+                DrugInteractions = new KeyValueDto
+                {
+                    Key = persianTitles["DrugInteractions"],
+                    Value = drugInformation.DrugInteractions
+                },
+                PoisoningAndTreatment = new KeyValueDto
+                {
+                    Key = persianTitles["PoisoningAndTreatment"],
+                    Value = drugInformation.PoisoningAndTreatment
+                },
+                Precautions = new KeyValueDto
+                {
+                    Key = persianTitles["Precautions"],
+                    Value = drugInformation.Precautions
+                },
+                SpecialAttention = new KeyValueDto
+                {
+                    Key = persianTitles["SpecialAttention"],
+                    Value = drugInformation.SpecialAttention
+                },
                 UseInBreastfeedingAndChildren = new KeyValueDto
-                    { Key = "", Value = drugInformation.UseInBreastfeedingAndChildren },
-                Education = new KeyValueDto { Key = "", Value = drugInformation.Education },
-            }
-        ).FirstOrDefaultAsync(cancellationToken);
+                {
+                    Key = persianTitles["UseInBreastfeedingAndChildren"],
+                    Value = drugInformation.UseInBreastfeedingAndChildren
+                },
+                Education = new KeyValueDto
+                {
+                    Key = persianTitles["Education"],
+                    Value = drugInformation.Education
+                },
+            };
+
+        var drugDetail = await drugDetailQuery.FirstOrDefaultAsync(cancellationToken);
 
         if (drugDetail == null)
         {
             return new ErrorDataResult<DrugDetailDto>(Messages.NotFound);
         }
 
-        // Now set the Persian titles using the dictionary
-        drugDetail.PharmacologicalClassification.Key = persianTitles["PharmacologicalClassification"];
-        drugDetail.TherapeuticClassification.Key = persianTitles["TherapeuticClassification"];
-        drugDetail.MartindaleClassification.Key = persianTitles["MartindaleClassification"];
-        drugDetail.PregnancyClassification.Key = persianTitles["PregnancyClassification"];
-        drugDetail.MethodOfUse.Key = persianTitles["MethodOfUse"];
-        drugDetail.Indication.Key = persianTitles["Indication"];
-        drugDetail.sideEffects.Key = persianTitles["sideEffects"];
-        drugDetail.MechanismOfEffect.Key = persianTitles["MechanismOfEffect"];
-        drugDetail.BeginningOfEffect.Key = persianTitles["BeginningOfEffect"];
-        drugDetail.PeakOfEffect.Key = persianTitles["PeakOfEffect"];
-        drugDetail.Pharmacokinetics.Key = persianTitles["Pharmacokinetics"];
-        drugDetail.PrescriptionIndications.Key = persianTitles["PrescriptionIndications"];
-        drugDetail.Contraindicated.Key = persianTitles["Contraindicated"];
-        drugDetail.IncreaseEffect.Key = persianTitles["IncreaseEffect"];
-        drugDetail.ReduceEffect.Key = persianTitles["ReduceEffect"];
-        drugDetail.AvoidInteractions.Key = persianTitles["AvoidInteractions"];
-        drugDetail.FoodInteractions.Key = persianTitles["FoodInteractions"];
-        drugDetail.DrugInteractions.Key = persianTitles["DrugInteractions"];
-        drugDetail.PoisoningAndTreatment.Key = persianTitles["PoisoningAndTreatment"];
-        drugDetail.Precautions.Key = persianTitles["Precautions"];
-        drugDetail.SpecialAttention.Key = persianTitles["SpecialAttention"];
-        drugDetail.UseInBreastfeedingAndChildren.Key = persianTitles["UseInBreastfeedingAndChildren"];
-        drugDetail.Education.Key = persianTitles["Education"];
-
-        var forms = await
-        (
-            from drugForm in _drugFormRepository.TableNoTracking
-            join pharmaceuticalForms in _pharmaceuticalFormsRepository.TableNoTracking on drugForm.PharmaceuticalFormId
-                equals pharmaceuticalForms.Id
-            where drugForm.DrugId == drugId &&
-                  drugForm.IsDeleted == false &&
-                  pharmaceuticalForms.IsDeleted == false
+        var forms = await (
+            from drugForm in _drugFormRepository.TableNoTracking.Where(df => df.DrugId == drugId && !df.IsDeleted)
+            join pharmaceuticalForms in _pharmaceuticalFormsRepository.TableNoTracking.Where(pf => !pf.IsDeleted)
+                on drugForm.PharmaceuticalFormId equals pharmaceuticalForms.Id
             select new PharmaceuticalFormsGetDto
             {
                 Id = pharmaceuticalForms.Id,
@@ -424,7 +481,7 @@ public class DrugService : IDrugService, IDrugCategoryService, IScopedDependency
             }
         ).ToListAsync(cancellationToken);
 
-        drugDetail.forms = forms;
+        drugDetail.Forms = forms;
 
         return new SuccessDataResult<DrugDetailDto>(drugDetail);
     }
