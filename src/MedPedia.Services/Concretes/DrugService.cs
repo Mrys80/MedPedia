@@ -318,6 +318,8 @@ public class DrugService : IDrugService, IDrugCategoryService, IScopedDependency
 
     public async Task<IDataResult<DrugDetailDto>> GetDrugDetail(int drugId, CancellationToken cancellationToken)
     {
+        var persianTitles = GetItemPersianTitles();
+
         var drugDetail = await
         (
             from drug in _drugRepository.TableNoTracking
@@ -333,16 +335,15 @@ public class DrugService : IDrugService, IDrugCategoryService, IScopedDependency
                 .PregnancyClassificationId equals pregnancyClassification.Id
             join methodOfUse in _methodOfUseRepository.TableNoTracking on drugInformation.MethodOfUseId equals
                 methodOfUse.Id
-            where
-                drug.Id == drugId &&
-                drug.IsDeleted == false &&
-                drugCategory.IsDeleted == false &&
-                drugInformation.IsDeleted == false &&
-                pharmacologicalClassification.IsDeleted == false &&
-                therapeuticClassification.IsDeleted == false &&
-                martindaleClassification.IsDeleted == false &&
-                pregnancyClassification.IsDeleted == false &&
-                methodOfUse.IsDeleted == false
+            where drug.Id == drugId &&
+                  drug.IsDeleted == false &&
+                  drugCategory.IsDeleted == false &&
+                  drugInformation.IsDeleted == false &&
+                  pharmacologicalClassification.IsDeleted == false &&
+                  therapeuticClassification.IsDeleted == false &&
+                  martindaleClassification.IsDeleted == false &&
+                  pregnancyClassification.IsDeleted == false &&
+                  methodOfUse.IsDeleted == false
             select new DrugDetailDto
             {
                 FaTitle = drug.FaTitle,
@@ -350,151 +351,80 @@ public class DrugService : IDrugService, IDrugCategoryService, IScopedDependency
                 Brand = drug.FaTitle,
                 CategoryEnTitle = drugCategory.EnTitle,
                 CategoryFaTitle = drugCategory.FaTitle,
-                PharmacologicalClassification = new KeyValueDto()
-                {
-                    Key = GetItemPersianTitles()["PharmacologicalClassification"],
-                    Value = pharmacologicalClassification.Title
-                },
-                TherapeuticClassification = new KeyValueDto()
-                {
-                    Key = GetItemPersianTitles()["TherapeuticClassification"],
-                    Value = therapeuticClassification.Title
-                },
-                MartindaleClassification = new KeyValueDto()
-                {
-                    Key = GetItemPersianTitles()["MartindaleClassification"],
-                    Value = therapeuticClassification.Title
-                },
-                PregnancyClassification = new KeyValueDto()
-                {
-                    Key = GetItemPersianTitles()["PregnancyClassification"],
-                    Value = therapeuticClassification.Title
-                },
-                MethodOfUse = new KeyValueDto()
-                {
-                    Key = GetItemPersianTitles()["MethodOfUse"],
-                    Value = therapeuticClassification.Title
-                },
-                Indication = new KeyValueDto()
-                {
-                    Key = GetItemPersianTitles()["Indication"],
-                    Value = drugInformation.Indication
-                },
-                sideEffects = new KeyValueDto()
-                {
-                    Key = GetItemPersianTitles()["SideEffects"],
-                    Value = drugInformation.SideEffect
-                },
-                MechanismOfEffect = new KeyValueDto()
-                {
-                    Key = GetItemPersianTitles()["MechanismOfEffect"],
-                    Value = drugInformation.MechanismOfEffect
-                },
-                BeginningOfEffect = new KeyValueDto()
-                {
-                    Key = GetItemPersianTitles()["BeginningOfEffect"],
-                    Value = drugInformation.BeginningOfEffect
-                },
-                PeakOfEffect = new KeyValueDto()
-                {
-                    Key = GetItemPersianTitles()["PeakOfEffect"],
-                    Value = drugInformation.PeakOfEffect
-                },
-                Pharmacokinetics = new KeyValueDto()
-                {
-                    Key = GetItemPersianTitles()["Pharmacokinetics"],
-                    Value = drugInformation.Pharmacodynamics
-                },
-                PrescriptionIndications = new KeyValueDto()
-                {
-                    Key = GetItemPersianTitles()["PrescriptionIndications"],
-                    Value = drugInformation.PrescriptionIndications
-                },
-                Contraindicated = new KeyValueDto()
-                {
-                    Key = GetItemPersianTitles()["Contraindicated"],
-                    Value = drugInformation.Contraindicated
-                },
-                IncreaseEffect = new KeyValueDto()
-                {
-                    Key = GetItemPersianTitles()["IncreaseEffect"],
-                    Value = drugInformation.IncreaseEffect
-                },
-                ReduceEffect = new KeyValueDto()
-                {
-                    Key = GetItemPersianTitles()["ReduceEffect"],
-                    Value = drugInformation.ReduceEffect
-                },
-                AvoidInteractions = new KeyValueDto()
-                {
-                    Key = GetItemPersianTitles()["AvoidInteractions"],
-                    Value = drugInformation.AvoidInteractions
-                },
-                FoodInteractions = new KeyValueDto()
-                {
-                    Key = GetItemPersianTitles()["FoodInteractions"],
-                    Value = drugInformation.FoodInteractions
-                },
-                DrugInteractions = new KeyValueDto()
-                {
-                    Key = GetItemPersianTitles()["DrugInteractions"],
-                    Value = drugInformation.DrugInteractions
-                },
-                PoisoningAndTreatment = new KeyValueDto()
-                {
-                    Key = GetItemPersianTitles()["PoisoningAndTreatment"],
-                    Value = drugInformation.PoisoningAndTreatment
-                },
-                Precautions = new KeyValueDto()
-                {
-                    Key = GetItemPersianTitles()["Precautions"],
-                    Value = drugInformation.Precautions
-                },
-                SpecialAttention = new KeyValueDto()
-                {
-                    Key = GetItemPersianTitles()["SpecialAttention"],
-                    Value = drugInformation.SpecialAttention
-                },
-                UseInBreastfeedingAndChildren = new KeyValueDto()
-                {
-                    Key = GetItemPersianTitles()["UseInBreastfeedingAndChildren"],
-                    Value = drugInformation.UseInBreastfeedingAndChildren
-                },
-                Education = new KeyValueDto()
-                {
-                    Key = GetItemPersianTitles()["Education"],
-                    Value = drugInformation.Education
-                },
+                PharmacologicalClassification = new KeyValueDto
+                    { Key = "", Value = pharmacologicalClassification.Title },
+                TherapeuticClassification = new KeyValueDto { Key = "", Value = therapeuticClassification.Title },
+                MartindaleClassification = new KeyValueDto { Key = "", Value = martindaleClassification.Title },
+                PregnancyClassification = new KeyValueDto { Key = "", Value = pregnancyClassification.Title },
+                MethodOfUse = new KeyValueDto { Key = "", Value = methodOfUse.Title },
+                Indication = new KeyValueDto { Key = "", Value = drugInformation.Indication },
+                sideEffects = new KeyValueDto { Key = "", Value = drugInformation.SideEffect },
+                MechanismOfEffect = new KeyValueDto { Key = "", Value = drugInformation.MechanismOfEffect },
+                BeginningOfEffect = new KeyValueDto { Key = "", Value = drugInformation.BeginningOfEffect },
+                PeakOfEffect = new KeyValueDto { Key = "", Value = drugInformation.PeakOfEffect },
+                Pharmacokinetics = new KeyValueDto { Key = "", Value = drugInformation.Pharmacodynamics },
+                PrescriptionIndications = new KeyValueDto { Key = "", Value = drugInformation.PrescriptionIndications },
+                Contraindicated = new KeyValueDto { Key = "", Value = drugInformation.Contraindicated },
+                IncreaseEffect = new KeyValueDto { Key = "", Value = drugInformation.IncreaseEffect },
+                ReduceEffect = new KeyValueDto { Key = "", Value = drugInformation.ReduceEffect },
+                AvoidInteractions = new KeyValueDto { Key = "", Value = drugInformation.AvoidInteractions },
+                FoodInteractions = new KeyValueDto { Key = "", Value = drugInformation.FoodInteractions },
+                DrugInteractions = new KeyValueDto { Key = "", Value = drugInformation.DrugInteractions },
+                PoisoningAndTreatment = new KeyValueDto { Key = "", Value = drugInformation.PoisoningAndTreatment },
+                Precautions = new KeyValueDto { Key = "", Value = drugInformation.Precautions },
+                SpecialAttention = new KeyValueDto { Key = "", Value = drugInformation.SpecialAttention },
+                UseInBreastfeedingAndChildren = new KeyValueDto
+                    { Key = "", Value = drugInformation.UseInBreastfeedingAndChildren },
+                Education = new KeyValueDto { Key = "", Value = drugInformation.Education },
             }
         ).FirstOrDefaultAsync(cancellationToken);
-
 
         if (drugDetail == null)
         {
             return new ErrorDataResult<DrugDetailDto>(Messages.NotFound);
         }
 
+        // Now set the Persian titles using the dictionary
+        drugDetail.PharmacologicalClassification.Key = persianTitles["PharmacologicalClassification"];
+        drugDetail.TherapeuticClassification.Key = persianTitles["TherapeuticClassification"];
+        drugDetail.MartindaleClassification.Key = persianTitles["MartindaleClassification"];
+        drugDetail.PregnancyClassification.Key = persianTitles["PregnancyClassification"];
+        drugDetail.MethodOfUse.Key = persianTitles["MethodOfUse"];
+        drugDetail.Indication.Key = persianTitles["Indication"];
+        drugDetail.sideEffects.Key = persianTitles["sideEffects"];
+        drugDetail.MechanismOfEffect.Key = persianTitles["MechanismOfEffect"];
+        drugDetail.BeginningOfEffect.Key = persianTitles["BeginningOfEffect"];
+        drugDetail.PeakOfEffect.Key = persianTitles["PeakOfEffect"];
+        drugDetail.Pharmacokinetics.Key = persianTitles["Pharmacokinetics"];
+        drugDetail.PrescriptionIndications.Key = persianTitles["PrescriptionIndications"];
+        drugDetail.Contraindicated.Key = persianTitles["Contraindicated"];
+        drugDetail.IncreaseEffect.Key = persianTitles["IncreaseEffect"];
+        drugDetail.ReduceEffect.Key = persianTitles["ReduceEffect"];
+        drugDetail.AvoidInteractions.Key = persianTitles["AvoidInteractions"];
+        drugDetail.FoodInteractions.Key = persianTitles["FoodInteractions"];
+        drugDetail.DrugInteractions.Key = persianTitles["DrugInteractions"];
+        drugDetail.PoisoningAndTreatment.Key = persianTitles["PoisoningAndTreatment"];
+        drugDetail.Precautions.Key = persianTitles["Precautions"];
+        drugDetail.SpecialAttention.Key = persianTitles["SpecialAttention"];
+        drugDetail.UseInBreastfeedingAndChildren.Key = persianTitles["UseInBreastfeedingAndChildren"];
+        drugDetail.Education.Key = persianTitles["Education"];
 
-        var forms =
-            await
-            (
-                from drugForm in _drugFormRepository.TableNoTracking
-                join pharmaceuticalForms in _pharmaceuticalFormsRepository.TableNoTracking on drugForm
-                    .PharmaceuticalFormId equals pharmaceuticalForms.Id
-                where
-                    drugForm.DrugId == drugId &&
-                    drugForm.IsDeleted == false &&
-                    pharmaceuticalForms.IsDeleted == false
-                select new PharmaceuticalFormsGetDto
-                {
-                    Id = pharmaceuticalForms.Id,
-                    Title = pharmaceuticalForms.Title
-                }
-            ).ToListAsync(cancellationToken);
-
+        var forms = await
+        (
+            from drugForm in _drugFormRepository.TableNoTracking
+            join pharmaceuticalForms in _pharmaceuticalFormsRepository.TableNoTracking on drugForm.PharmaceuticalFormId
+                equals pharmaceuticalForms.Id
+            where drugForm.DrugId == drugId &&
+                  drugForm.IsDeleted == false &&
+                  pharmaceuticalForms.IsDeleted == false
+            select new PharmaceuticalFormsGetDto
+            {
+                Id = pharmaceuticalForms.Id,
+                Title = pharmaceuticalForms.Title
+            }
+        ).ToListAsync(cancellationToken);
 
         drugDetail.forms = forms;
-
 
         return new SuccessDataResult<DrugDetailDto>(drugDetail);
     }
