@@ -350,29 +350,121 @@ public class DrugService : IDrugService, IDrugCategoryService, IScopedDependency
                 Brand = drug.FaTitle,
                 CategoryEnTitle = drugCategory.EnTitle,
                 CategoryFaTitle = drugCategory.FaTitle,
-                PharmacologicalClassification = pharmacologicalClassification.Title,
-                TherapeuticClassification = therapeuticClassification.Title,
-                MartindaleClassification = martindaleClassification.Title,
-                PregnancyClassification = pregnancyClassification.Title,
-                MethodOfUse = methodOfUse.Title,
-                Indication = drugInformation.Indication,
-                sideEffects = drugInformation.SideEffect,
-                MechanismOfEffect = drugInformation.MechanismOfEffect,
-                BeginningOfEffect = drugInformation.BeginningOfEffect,
-                PeakOfEffect = drugInformation.PeakOfEffect,
-                Pharmacokinetics = drugInformation.Pharmacokinetics,
-                PrescriptionIndications = drugInformation.PrescriptionIndications,
-                Contraindicated = drugInformation.Contraindicated,
-                IncreaseEffect = drugInformation.IncreaseEffect,
-                ReduceEffect = drugInformation.ReduceEffect,
-                AvoidInteractions = drugInformation.AvoidInteractions,
-                FoodInteractions = drugInformation.FoodInteractions,
-                DrugInteractions = drugInformation.DrugInteractions,
-                PoisoningAndTreatment = drugInformation.PoisoningAndTreatment,
-                Precautions = drugInformation.Precautions,
-                SpecialAttention = drugInformation.SpecialAttention,
-                UseInBreastfeedingAndChildren = drugInformation.UseInBreastfeedingAndChildren,
-                Education = drugInformation.Education,
+                PharmacologicalClassification = new KeyValueDto()
+                {
+                    Key = GetItemPersianTitles()["PharmacologicalClassification"],
+                    Value = pharmacologicalClassification.Title
+                },
+                TherapeuticClassification = new KeyValueDto()
+                {
+                    Key = GetItemPersianTitles()["TherapeuticClassification"],
+                    Value = therapeuticClassification.Title
+                },
+                MartindaleClassification = new KeyValueDto()
+                {
+                    Key = GetItemPersianTitles()["MartindaleClassification"],
+                    Value = therapeuticClassification.Title
+                },
+                PregnancyClassification = new KeyValueDto()
+                {
+                    Key = GetItemPersianTitles()["PregnancyClassification"],
+                    Value = therapeuticClassification.Title
+                },
+                MethodOfUse = new KeyValueDto()
+                {
+                    Key = GetItemPersianTitles()["MethodOfUse"],
+                    Value = therapeuticClassification.Title
+                },
+                Indication = new KeyValueDto()
+                {
+                    Key = GetItemPersianTitles()["Indication"],
+                    Value = drugInformation.Indication
+                },
+                sideEffects = new KeyValueDto()
+                {
+                    Key = GetItemPersianTitles()["SideEffects"],
+                    Value = drugInformation.SideEffect
+                },
+                MechanismOfEffect = new KeyValueDto()
+                {
+                    Key = GetItemPersianTitles()["MechanismOfEffect"],
+                    Value = drugInformation.MechanismOfEffect
+                },
+                BeginningOfEffect = new KeyValueDto()
+                {
+                    Key = GetItemPersianTitles()["BeginningOfEffect"],
+                    Value = drugInformation.BeginningOfEffect
+                },
+                PeakOfEffect = new KeyValueDto()
+                {
+                    Key = GetItemPersianTitles()["PeakOfEffect"],
+                    Value = drugInformation.PeakOfEffect
+                },
+                Pharmacokinetics = new KeyValueDto()
+                {
+                    Key = GetItemPersianTitles()["Pharmacokinetics"],
+                    Value = drugInformation.Pharmacodynamics
+                },
+                PrescriptionIndications = new KeyValueDto()
+                {
+                    Key = GetItemPersianTitles()["PrescriptionIndications"],
+                    Value = drugInformation.PrescriptionIndications
+                },
+                Contraindicated = new KeyValueDto()
+                {
+                    Key = GetItemPersianTitles()["Contraindicated"],
+                    Value = drugInformation.Contraindicated
+                },
+                IncreaseEffect = new KeyValueDto()
+                {
+                    Key = GetItemPersianTitles()["IncreaseEffect"],
+                    Value = drugInformation.IncreaseEffect
+                },
+                ReduceEffect = new KeyValueDto()
+                {
+                    Key = GetItemPersianTitles()["ReduceEffect"],
+                    Value = drugInformation.ReduceEffect
+                },
+                AvoidInteractions = new KeyValueDto()
+                {
+                    Key = GetItemPersianTitles()["AvoidInteractions"],
+                    Value = drugInformation.AvoidInteractions
+                },
+                FoodInteractions = new KeyValueDto()
+                {
+                    Key = GetItemPersianTitles()["FoodInteractions"],
+                    Value = drugInformation.FoodInteractions
+                },
+                DrugInteractions = new KeyValueDto()
+                {
+                    Key = GetItemPersianTitles()["DrugInteractions"],
+                    Value = drugInformation.DrugInteractions
+                },
+                PoisoningAndTreatment = new KeyValueDto()
+                {
+                    Key = GetItemPersianTitles()["PoisoningAndTreatment"],
+                    Value = drugInformation.PoisoningAndTreatment
+                },
+                Precautions = new KeyValueDto()
+                {
+                    Key = GetItemPersianTitles()["Precautions"],
+                    Value = drugInformation.Precautions
+                },
+                SpecialAttention = new KeyValueDto()
+                {
+                    Key = GetItemPersianTitles()["SpecialAttention"],
+                    Value = drugInformation.SpecialAttention
+                },
+                UseInBreastfeedingAndChildren = new KeyValueDto()
+                {
+                    Key = GetItemPersianTitles()["UseInBreastfeedingAndChildren"],
+                    Value = drugInformation.UseInBreastfeedingAndChildren
+                },
+                Education = new KeyValueDto()
+                {
+                    Key = GetItemPersianTitles()["Education"],
+                    Value = drugInformation.Education
+                },
             }
         ).FirstOrDefaultAsync(cancellationToken);
 
