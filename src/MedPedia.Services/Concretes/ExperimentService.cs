@@ -1,12 +1,15 @@
 ﻿using System.Globalization;
 using Mapster;
 using MedPedia.Common.Abstracts;
+using MedPedia.Common.Utilities.Enums;
 using MedPedia.Common.Utilities.Results;
 using MedPedia.Entities.Dto;
+using MedPedia.Entities.Dto.Drug;
 using MedPedia.Entities.Dto.Experiment;
 using MedPedia.Entities.Dto.Prescription;
 using MedPedia.Entities.Entities;
 using MedPedia.Services.Abstracts;
+using Microsoft.EntityFrameworkCore;
 using Teb.Data.Abstracts;
 
 namespace MedPedia.Services.Concretes;
@@ -175,6 +178,116 @@ public class ExperimentService : IExperimentService, IScopedDependency
         return new SuccessDataResult<ExperimentDetailDto>(experimentInfoDto);
     }
 
+    public async Task<IDataResult<ExperimentInformationDto>> GetExperimentDetail(int experimentId,
+        CancellationToken cancellationToken)
+    {
+        var persianTitles = GetItemPersianTitles();
+
+        var experimentDetailQuery =
+            from experiment in _experimentRepository.TableNoTracking.Where(e => e.Id == experimentId && !e.IsDeleted)
+            join experimentCategory in _experimentCategoryRepository.TableNoTracking.Where(ec => !ec.IsDeleted)
+                on experiment.ExperimentCategoryId equals experimentCategory.Id
+            join experimentInformation in _experimentInformationRepository.TableNoTracking.Where(ei => !ei.IsDeleted)
+                on experiment.Id equals experimentInformation.ExperimentId
+            select new ExperimentInformationDto
+            {
+                ExperimentId = experiment.Id,
+                FaTitle = experiment.FaTitle,
+                EnTitle = experiment.EnTitle,
+                Abbreviation = new KeyValueDto
+                {
+                    Key = persianTitles["Abbreviation"],
+                    Value = experimentInformation.Abbreviation
+                },
+                Title = new KeyValueDto
+                {
+                    Key = persianTitles["Title"],
+                    Value = experimentCategory.Title
+                },
+                ImageId = experimentCategory.ImageId == null
+                    ? null
+                    : new KeyValueDto
+                    {
+                        Key = persianTitles["ImageId"],
+                        Value = experimentCategory.ImageId
+                    },
+                Usage = new KeyValueDto
+                {
+                    Key = persianTitles["Usage"],
+                    Value = experimentInformation.Usage
+                },
+                InterferingFactors = new KeyValueDto
+                {
+                    Key = persianTitles["InterferingFactors"],
+                    Value = experimentInformation.InterferingFactors
+                },
+                Description = new KeyValueDto
+                {
+                    Key = persianTitles["Description"],
+                    Value = experimentInformation.Description
+                },
+                NormalSuffering = new KeyValueDto
+                {
+                    Key = persianTitles["NormalSuffering"],
+                    Value = experimentInformation.NormalSuffering
+                },
+                ScopeOfCrisis = new KeyValueDto
+                {
+                    Key = persianTitles["ScopeOfCrisis"],
+                    Value = experimentInformation.ScopeOfCrisis
+                },
+                CommonCausesOfDeficiencyOrExcess = new KeyValueDto
+                {
+                    Key = persianTitles["CommonCausesOfDeficiencyOrExcess"],
+                    Value = experimentInformation.CommonCausesOfDeficiencyOrExcess
+                },
+                RelatedSymptomsOrDisease = new KeyValueDto
+                {
+                    Key = persianTitles["RelatedSymptomsOrDisease"],
+                    Value = experimentInformation.RelatedSymptomsOrDisease
+                },
+                PreSamplingConditions = new KeyValueDto
+                {
+                    Key = persianTitles["PreSamplingConditions"],
+                    Value = experimentInformation.PreSamplingConditions
+                },
+                RequiredSample = new KeyValueDto
+                {
+                    Key = persianTitles["RequiredSample"],
+                    Value = experimentInformation.RequiredSample
+                },
+                VialType = new KeyValueDto
+                {
+                    Key = persianTitles["VialType"],
+                    Value = experimentInformation.VialType
+                },
+                RelatedTests = new KeyValueDto
+                {
+                    Key = persianTitles["RelatedTests"],
+                    Value = experimentInformation.RelatedTests
+                },
+                ClinicaNotes = new KeyValueDto
+                {
+                    Key = persianTitles["ClinicaNotes"],
+                    Value = experimentInformation.ClinicaNotes
+                },
+                TestLimitations = new KeyValueDto
+                {
+                    Key = persianTitles["TestLimitations"],
+                    Value = experimentInformation.TestLimitations
+                }
+            };
+
+        var experimentDetail = await experimentDetailQuery.FirstOrDefaultAsync(cancellationToken);
+
+        if (experimentDetail == null)
+        {
+            return new ErrorDataResult<ExperimentInformationDto>(Messages.NotFound);
+        }
+
+        return new SuccessDataResult<ExperimentInformationDto>(experimentDetail);
+    }
+
 
     public class PersianComparer : IComparer<string>
     {
@@ -183,5 +296,26 @@ public class ExperimentService : IExperimentService, IScopedDependency
             var cultureInfo = new CultureInfo("fa-IR");
             return string.Compare(x, y, cultureInfo, CompareOptions.None);
         }
+    }
+
+    private static Dictionary<string, string> GetItemPersianTitles()
+    {
+        return new Dictionary<string, string>
+        {
+            { "Abbreviation", "مخفف" },
+            { "Usage", "کاربرد" },
+            { "InterferingFactors", "عوامل مداخله‌کننده" },
+            { "Description", "توضیحات" },
+            { "NormalSuffering", "محدوده نرمال" },
+            { "ScopeOfCrisis", "محدوده بحرانی" },
+            { "CommonCausesOfDeficiencyOrExcess", "دلایل شایع کمبود یا افزایش" },
+            { "RelatedSymptomsOrDisease", "علائم یا بیماری‌های مرتبط" },
+            { "PreSamplingConditions", "شرایط قبل از نمونه‌گیری" },
+            { "RequiredSample", "نمونه موردنیاز" },
+            { "VialType", "نوع ویال" },
+            { "RelatedTests", "آزمایش‌های مرتبط" },
+            { "ClinicaNotes", "یادداشت‌های کلینیکی" },
+            { "TestLimitations", "محدودیت‌های آزمایش" },
+        };
     }
 }

@@ -10,23 +10,15 @@ using Microsoft.AspNetCore.Mvc;
 namespace MedPedia.WebApi.Controllers.v1;
 
 [ApiVersion("1")]
-public class ExperimentController : BaseController
+public class ExperimentController(IHttpContextAccessor httpContextAccessor, IExperimentService experimentService)
+    : BaseController(httpContextAccessor)
 {
-    private readonly IExperimentService _experimentService;
-
-
-    public ExperimentController(IHttpContextAccessor httpContextAccessor, IExperimentService experimentService) : base(
-        httpContextAccessor)
-    {
-        _experimentService = experimentService;
-    }
-
     [HttpGet("[action]")]
     public async Task<IActionResult> GetAllExperiment(
         CancellationToken cancellationToken)
     {
         var result =
-            await _experimentService.GetAllExperiment(cancellationToken);
+            await experimentService.GetAllExperiment(cancellationToken);
 
         if (!result.IsSuccess)
             return BadRequest(result);
@@ -41,7 +33,7 @@ public class ExperimentController : BaseController
     )
     {
         var result =
-            await _experimentService.GetAllExperimentByCategoryId(
+            await experimentService.GetAllExperimentByCategoryId(
                 categoryId, cancellationToken
             );
 
@@ -57,7 +49,7 @@ public class ExperimentController : BaseController
     )
     {
         var result =
-            await _experimentService.AddExperiment(
+            await experimentService.AddExperiment(
                 CurrentUser, experimentAddDto, cancellationToken
             );
 
@@ -73,7 +65,7 @@ public class ExperimentController : BaseController
         CancellationToken cancellationToken)
     {
         var result =
-            await _experimentService.GetAllExperimentCategory(cancellationToken);
+            await experimentService.GetAllExperimentCategory(cancellationToken);
 
         if (!result.IsSuccess)
             return BadRequest(result);
@@ -87,7 +79,7 @@ public class ExperimentController : BaseController
     )
     {
         var result =
-            await _experimentService.AddExperimentCategory(
+            await experimentService.AddExperimentCategory(
                 CurrentUser, experimentCategoryAddDto, cancellationToken
             );
 
@@ -102,7 +94,19 @@ public class ExperimentController : BaseController
         int experimentId, CancellationToken cancellationToken)
     {
         var result =
-            await _experimentService.GetExperimentInfo(experimentId, cancellationToken);
+            await experimentService.GetExperimentInfo(experimentId, cancellationToken);
+
+        if (!result.IsSuccess)
+            return BadRequest(result);
+
+        return Ok(result);
+    }
+
+    [HttpGet("[action]/{experimentId:int}")]
+    public async Task<IActionResult> GetExperimentDetail(
+        int experimentId, CancellationToken cancellationToken)
+    {
+        var result = await experimentService.GetExperimentDetail(experimentId, cancellationToken);
 
         if (!result.IsSuccess)
             return BadRequest(result);
