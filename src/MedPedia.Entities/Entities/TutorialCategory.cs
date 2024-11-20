@@ -2,7 +2,7 @@ using MedPedia.Common.Entities.Entities;
 
 namespace MedPedia.Entities.Entities;
 
-public class Tutorial : BaseEntity
+public class TutorialCategory : BaseEntity
 {
     public string Title { get; set; }
     

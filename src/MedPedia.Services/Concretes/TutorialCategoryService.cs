@@ -10,39 +10,39 @@ using Teb.Data.Abstracts;
 
 namespace MedPedia.Services.Concretes;
 
-public class TutorialService(IRepository<Tutorial> tutorialRepository) : ITutorialService, IScopedDependency
+public class TutorialCategoryService(IRepository<TutorialCategory> tutorialRepository) : ITutorialCategoryService, IScopedDependency
 {
-    public async Task<ListResult<List<TutorialDto>>> GetAllTutorials(CancellationToken cancellationToken)
+    public async Task<ListResult<List<TutorialCategoryDto>>> GetAllTutorials(CancellationToken cancellationToken)
     {
         var tutorial = await tutorialRepository.GetListAsync(
             t =>
                 t.IsDeleted == false, cancellationToken: cancellationToken);
 
-        var tutorialDtos = tutorial.Adapt<List<TutorialDto>>();
+        var tutorialDtos = tutorial.Adapt<List<TutorialCategoryDto>>();
 
-        return new SuccessListResult<List<TutorialDto>>(tutorialDtos);
+        return new SuccessListResult<List<TutorialCategoryDto>>(tutorialDtos);
     }
 
-    public async Task<DataResult<TutorialDto>> AddTutorial(TutorialAddUpdateDto tutorialAddUpdateDto,
+    public async Task<DataResult<TutorialCategoryDto>> AddTutorial(TutorialCategoryAddUpdateDto tutorialCategoryAddUpdateDto,
         CurrentUserDto currentUserDto,
         CancellationToken cancellationToken)
     {
-        var tutorial = new Tutorial
+        var tutorial = new TutorialCategory
         {
-            Image = tutorialAddUpdateDto.Image,
-            Title = tutorialAddUpdateDto.Title,
+            Image = tutorialCategoryAddUpdateDto.Image,
+            Title = tutorialCategoryAddUpdateDto.Title,
             RegDate = DateTime.Now,
             RegUserId = currentUserDto.UserId
         };
 
         await tutorialRepository.AddAsync(tutorial, cancellationToken);
 
-        var tutorialDto = tutorial.Adapt<TutorialDto>();
+        var tutorialDto = tutorial.Adapt<TutorialCategoryDto>();
 
-        return new SuccessDataResult<TutorialDto>(tutorialDto);
+        return new SuccessDataResult<TutorialCategoryDto>(tutorialDto);
     }
 
-    public async Task<DataResult<TutorialDto>> UpdateTutorial(int tutorialId, TutorialAddUpdateDto tutorialAddUpdateDto,
+    public async Task<DataResult<TutorialCategoryDto>> UpdateTutorial(int tutorialId, TutorialCategoryAddUpdateDto tutorialCategoryAddUpdateDto,
         CancellationToken cancellationToken)
     {
         var tutorial = await tutorialRepository.GetAsync(
@@ -50,17 +50,17 @@ public class TutorialService(IRepository<Tutorial> tutorialRepository) : ITutori
 
         if (tutorial == null)
         {
-            return new ErrorDataResult<TutorialDto>(Messages.NotFound);
+            return new ErrorDataResult<TutorialCategoryDto>(Messages.NotFound);
         }
 
-        tutorial.Image = tutorialAddUpdateDto.Image;
-        tutorial.Title = tutorialAddUpdateDto.Title;
+        tutorial.Image = tutorialCategoryAddUpdateDto.Image;
+        tutorial.Title = tutorialCategoryAddUpdateDto.Title;
 
         await tutorialRepository.UpdateAsync(tutorial, cancellationToken);
 
-        var tutorialDto = tutorial.Adapt<TutorialDto>();
+        var tutorialDto = tutorial.Adapt<TutorialCategoryDto>();
 
-        return new SuccessDataResult<TutorialDto>(tutorialDto);
+        return new SuccessDataResult<TutorialCategoryDto>(tutorialDto);
     }
 
     public async Task<Result> DeleteTutorial(int tutorialId, CurrentUserDto currentUserDto,

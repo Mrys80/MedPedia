@@ -2,7 +2,7 @@ using MedPedia.Common.Entities.Abstracts;
 
 namespace MedPedia.Entities.Dto.Tutorial;
 
-public class TutorialDto : IDto
+public class TutorialCategoryDto : IDto
 {
     public int Id { get; set; }
     

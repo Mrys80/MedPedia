@@ -1163,6 +1163,35 @@ namespace Teb.Data.Migrations
                     b.ToTable("TherapeuticClassifications", "dbo");
                 });
 
+            modelBuilder.Entity("MedPedia.Entities.Entities.TutorialCategory", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
+
+                    b.Property<string>("Image")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<bool>("IsDeleted")
+                        .HasColumnType("bit");
+
+                    b.Property<DateTime>("RegDate")
+                        .HasColumnType("datetime2");
+
+                    b.Property<int>("RegUserId")
+                        .HasColumnType("int");
+
+                    b.Property<string>("Title")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.HasKey("Id");
+
+                    b.ToTable("TutorialCategories", "dbo");
+                });
+
             modelBuilder.Entity("MedPedia.Entities.Entities.UserQuiz", b =>
                 {
                     b.Property<int>("Id")

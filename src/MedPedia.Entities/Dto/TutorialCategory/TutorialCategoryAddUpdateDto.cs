@@ -1,6 +1,6 @@
 namespace MedPedia.Entities.Dto.Tutorial;
 
-public class TutorialAddUpdateDto
+public class TutorialCategoryAddUpdateDto
 {
     public string Title { get; set; }
     
