@@ -28,4 +28,7 @@ public interface IDiseaseService
 
     Task<IDataResult<DiseaseInfo>> GetDiseaseInfo(int diseaseId,
         CancellationToken cancellationToken);
+    
+    Task<IDataResult<DiseaseInformationDto>> GetDiseaseDetail(int diseaseId,
+        CancellationToken cancellationToken);
 }
