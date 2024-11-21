@@ -1,8 +1,4 @@
-﻿using MedPedia.Entities.Dto.Classification;
-using MedPedia.Entities.Dto.Drug;
-using MedPedia.Entities.Dto.DrugCategory;
-using MedPedia.Entities.Dto.Experiment;
-using MedPedia.Entities.Dto.Prescription;
+﻿using MedPedia.Entities.Dto.Experiment;
 using MedPedia.Services.Abstracts;
 using MedPedia.WebFramework.Api;
 using Microsoft.AspNetCore.Mvc;

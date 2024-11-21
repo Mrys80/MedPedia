@@ -28,7 +28,6 @@ public interface IRepository<TEntity> where TEntity : class, IEntity
     ValueTask<TEntity> GetAsync(Expression<Func<TEntity, bool>> filter, CancellationToken cancellationToken = default);
     
     ValueTask<List<TEntity>> GetListAsync(Expression<Func<TEntity, bool>> filter, CancellationToken cancellationToken = default);
-
     ValueTask<TEntity> GetByIdAsync(CancellationToken cancellationToken, params object[] ids);
     void LoadCollection<TProperty>(TEntity entity, Expression<Func<TEntity, IEnumerable<TProperty>>> collectionProperty) where TProperty : class;
     Task LoadCollectionAsync<TProperty>(TEntity entity, Expression<Func<TEntity, IEnumerable<TProperty>>> collectionProperty, CancellationToken cancellationToken) where TProperty : class;

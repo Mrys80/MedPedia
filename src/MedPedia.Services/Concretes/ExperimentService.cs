@@ -6,7 +6,6 @@ using MedPedia.Common.Utilities.Results;
 using MedPedia.Entities.Dto;
 using MedPedia.Entities.Dto.Drug;
 using MedPedia.Entities.Dto.Experiment;
-using MedPedia.Entities.Dto.Prescription;
 using MedPedia.Entities.Entities;
 using MedPedia.Services.Abstracts;
 using Microsoft.EntityFrameworkCore;

@@ -1,7 +1,6 @@
 ﻿using MedPedia.Common.Entities.Dto;
 using MedPedia.Common.Utilities.Results;
 using MedPedia.Entities.Dto;
-using MedPedia.Entities.Dto.Prescription;
 
 namespace MedPedia.Services.Abstracts;
 
