@@ -1,3 +1,4 @@
+using System.Globalization;
 using Mapster;
 using MedPedia.Common.Abstracts;
 using MedPedia.Common.Utilities.Enums;
@@ -17,20 +18,24 @@ public class PrescriptionWritingService(IRepository<PrescriptionWriting> prescri
     public async Task<IListResult<List<PrescriptionWritingGetDto>>> GetAllPrescriptions(
         CancellationToken cancellationToken)
     {
-        var prescriptionWriting = await prescriptionWritingRepository
-            .GetListAsync(prescriptionWriting => prescriptionWriting.IsDeleted == false, cancellationToken);
+        var prescriptions = await prescriptionWritingRepository
+            .GetListAsync(p => !p.IsDeleted, cancellationToken);
 
-        var prescriptionWritingDto = prescriptionWriting.Select(prescription => new PrescriptionWritingGetDto
+        var sortedPrescriptions = prescriptions
+            .Select(prescription => new PrescriptionWritingGetDto
             {
                 Id = prescription.Id,
                 FaTitle = prescription.FaTitle,
-                ImageId = prescription.ImageId,
-                Description = prescription.Description,
                 EnTitle = prescription.EnTitle,
+                ImageId = prescription.ImageId,
+                Description = prescription.Description
             })
+            .OrderBy(prescriptionDto => prescriptionDto.FaTitle, new PersianComparer())
             .ToList();
-        return new SuccessListResult<List<PrescriptionWritingGetDto>>(prescriptionWritingDto);
+
+        return new SuccessListResult<List<PrescriptionWritingGetDto>>(sortedPrescriptions);
     }
+
 
     public async Task<IDataResult<PrescriptionWritingDetailDto>> GetPrescriptionDetail(int prescriptionId,
         CancellationToken cancellationToken)
@@ -125,5 +130,15 @@ public class PrescriptionWritingService(IRepository<PrescriptionWriting> prescri
         }).ToList();
 
         return new SuccessListResult<List<PrescriptionWritingGetDto>>(prescriptionDtos);
+    }
+
+
+    public class PersianComparer : IComparer<string>
+    {
+        public int Compare(string x, string y)
+        {
+            var cultureInfo = new CultureInfo("fa-IR");
+            return string.Compare(x, y, cultureInfo, CompareOptions.None);
+        }
     }
 }
