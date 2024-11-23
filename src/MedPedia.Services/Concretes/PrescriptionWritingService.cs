@@ -108,26 +108,25 @@ public class PrescriptionWritingService(IRepository<PrescriptionWriting> prescri
         return new SuccessListResult<List<PrescriptionWritingGetDto>>(prescriptionsDto);
     }
 
-    public async Task<IListResult<List<PrescriptionWritingGetDto>>> SearchPrescriptions(string text,
+    public async Task<IListResult<List<PrescriptionWritingGetDto>>> SearchPrescriptions(
+        string text,
         CancellationToken cancellationToken)
     {
         var prescriptions = await prescriptionWritingRepository
-            .GetListAsync(prescription => !prescription.IsDeleted && prescription.FaTitle.Contains(text),
+            .GetListAsync(
+                prescription => !prescription.IsDeleted &&
+                                (prescription.FaTitle.Contains(text) || prescription.EnTitle.Contains(text)),
                 cancellationToken);
 
         var prescriptionDtos = prescriptions.Select(prescription => new PrescriptionWritingGetDto
-        {
-            Id = prescription.Id,
-            FaTitle = prescription.FaTitle,
-            EnTitle = prescription.EnTitle,
-            ImageId = prescription.ImageId,
-            Description = prescription.Description,
-            DrugIds = prescription.DrugIds
-                .Split(',', StringSplitOptions.RemoveEmptyEntries)
-                .Select(int.Parse)
-                .ToList(),
-            DiseaseIds = prescription.DiseaseId
-        }).ToList();
+            {
+                Id = prescription.Id,
+                FaTitle = prescription.FaTitle,
+                EnTitle = prescription.EnTitle,
+                ImageId = prescription.ImageId,
+                Description = prescription.Description
+            })
+            .ToList();
 
         return new SuccessListResult<List<PrescriptionWritingGetDto>>(prescriptionDtos);
     }
