@@ -177,112 +177,120 @@ public class ExperimentService : IExperimentService, IScopedDependency
         return new SuccessDataResult<ExperimentDetailDto>(experimentInfoDto);
     }
 
-    public async Task<IDataResult<ExperimentInformationDto>> GetExperimentDetail(int experimentId,
+    public async Task<IDataResult<ExperimentInformationDto>> GetExperimentDetail(
+        int experimentId,
         CancellationToken cancellationToken)
     {
         var persianTitles = GetItemPersianTitles();
 
-        var experimentDetailQuery =
+        var rawQuery =
             from experiment in _experimentRepository.TableNoTracking.Where(e => e.Id == experimentId && !e.IsDeleted)
             join experimentCategory in _experimentCategoryRepository.TableNoTracking.Where(ec => !ec.IsDeleted)
                 on experiment.ExperimentCategoryId equals experimentCategory.Id
             join experimentInformation in _experimentInformationRepository.TableNoTracking.Where(ei => !ei.IsDeleted)
                 on experiment.Id equals experimentInformation.ExperimentId
-            select new ExperimentInformationDto
+            select new
             {
-                ExperimentId = experiment.Id,
-                FaTitle = experiment.FaTitle,
-                EnTitle = experiment.EnTitle,
-                Abbreviation = new KeyValueDto
-                {
-                    Key = persianTitles["Abbreviation"],
-                    Value = experimentInformation.Abbreviation
-                },
-                Title = new KeyValueDto
-                {
-                    Key = persianTitles["Title"],
-                    Value = experimentCategory.Title
-                },
-                ImageId = experimentCategory.ImageId == null
-                    ? null
-                    : new KeyValueDto
-                    {
-                        Key = persianTitles["ImageId"],
-                        Value = experimentCategory.ImageId
-                    },
-                Usage = new KeyValueDto
-                {
-                    Key = persianTitles["Usage"],
-                    Value = experimentInformation.Usage
-                },
-                InterferingFactors = new KeyValueDto
-                {
-                    Key = persianTitles["InterferingFactors"],
-                    Value = experimentInformation.InterferingFactors
-                },
-                Description = new KeyValueDto
-                {
-                    Key = persianTitles["Description"],
-                    Value = experimentInformation.Description
-                },
-                NormalSuffering = new KeyValueDto
-                {
-                    Key = persianTitles["NormalSuffering"],
-                    Value = experimentInformation.NormalSuffering
-                },
-                ScopeOfCrisis = new KeyValueDto
-                {
-                    Key = persianTitles["ScopeOfCrisis"],
-                    Value = experimentInformation.ScopeOfCrisis
-                },
-                CommonCausesOfDeficiencyOrExcess = new KeyValueDto
-                {
-                    Key = persianTitles["CommonCausesOfDeficiencyOrExcess"],
-                    Value = experimentInformation.CommonCausesOfDeficiencyOrExcess
-                },
-                RelatedSymptomsOrDisease = new KeyValueDto
-                {
-                    Key = persianTitles["RelatedSymptomsOrDisease"],
-                    Value = experimentInformation.RelatedSymptomsOrDisease
-                },
-                PreSamplingConditions = new KeyValueDto
-                {
-                    Key = persianTitles["PreSamplingConditions"],
-                    Value = experimentInformation.PreSamplingConditions
-                },
-                RequiredSample = new KeyValueDto
-                {
-                    Key = persianTitles["RequiredSample"],
-                    Value = experimentInformation.RequiredSample
-                },
-                VialType = new KeyValueDto
-                {
-                    Key = persianTitles["VialType"],
-                    Value = experimentInformation.VialType
-                },
-                RelatedTests = new KeyValueDto
-                {
-                    Key = persianTitles["RelatedTests"],
-                    Value = experimentInformation.RelatedTests
-                },
-                ClinicaNotes = new KeyValueDto
-                {
-                    Key = persianTitles["ClinicaNotes"],
-                    Value = experimentInformation.ClinicaNotes
-                },
-                TestLimitations = new KeyValueDto
-                {
-                    Key = persianTitles["TestLimitations"],
-                    Value = experimentInformation.TestLimitations
-                }
+                Experiment = experiment,
+                ExperimentCategory = experimentCategory,
+                ExperimentInformation = experimentInformation
             };
 
-        var experimentDetail = await experimentDetailQuery.FirstOrDefaultAsync(cancellationToken);
+        var rawData = await rawQuery.FirstOrDefaultAsync(cancellationToken);
 
-        if (experimentDetail == null)
+        if (rawData == null)
         {
             return new ErrorDataResult<ExperimentInformationDto>(Messages.NotFound);
         }
+
+        var experimentDetail = new ExperimentInformationDto
+        {
+            ExperimentId = rawData.Experiment.Id,
+            FaTitle = rawData.Experiment.FaTitle,
+            EnTitle = rawData.Experiment.EnTitle,
+            Abbreviation = new KeyValueDto
+            {
+                Key = persianTitles["Abbreviation"],
+                Value = rawData.ExperimentInformation.Abbreviation
+            },
+            Title = new KeyValueDto
+            {
+                Key = persianTitles["Title"],
+                Value = rawData.ExperimentCategory.Title
+            },
+            ImageId = rawData.ExperimentCategory.ImageId == null
+                ? null
+                : new KeyValueDto
+                {
+                    Key = persianTitles["ImageId"],
+                    Value = rawData.ExperimentCategory.ImageId
+                },
+            Usage = new KeyValueDto
+            {
+                Key = persianTitles["Usage"],
+                Value = rawData.ExperimentInformation.Usage
+            },
+            InterferingFactors = new KeyValueDto
+            {
+                Key = persianTitles["InterferingFactors"],
+                Value = rawData.ExperimentInformation.InterferingFactors
+            },
+            Description = new KeyValueDto
+            {
+                Key = persianTitles["Description"],
+                Value = rawData.ExperimentInformation.Description
+            },
+            NormalSuffering = new KeyValueDto
+            {
+                Key = persianTitles["NormalSuffering"],
+                Value = rawData.ExperimentInformation.NormalSuffering
+            },
+            ScopeOfCrisis = new KeyValueDto
+            {
+                Key = persianTitles["ScopeOfCrisis"],
+                Value = rawData.ExperimentInformation.ScopeOfCrisis
+            },
+            CommonCausesOfDeficiencyOrExcess = new KeyValueDto
+            {
+                Key = persianTitles["CommonCausesOfDeficiencyOrExcess"],
+                Value = rawData.ExperimentInformation.CommonCausesOfDeficiencyOrExcess
+            },
+            RelatedSymptomsOrDisease = new KeyValueDto
+            {
+                Key = persianTitles["RelatedSymptomsOrDisease"],
+                Value = rawData.ExperimentInformation.RelatedSymptomsOrDisease
+            },
+            PreSamplingConditions = new KeyValueDto
+            {
+                Key = persianTitles["PreSamplingConditions"],
+                Value = rawData.ExperimentInformation.PreSamplingConditions
+            },
+            RequiredSample = new KeyValueDto
+            {
+                Key = persianTitles["RequiredSample"],
+                Value = rawData.ExperimentInformation.RequiredSample
+            },
+            VialType = new KeyValueDto
+            {
+                Key = persianTitles["VialType"],
+                Value = rawData.ExperimentInformation.VialType
+            },
+            RelatedTests = new KeyValueDto
+            {
+                Key = persianTitles["RelatedTests"],
+                Value = rawData.ExperimentInformation.RelatedTests
+            },
+            ClinicaNotes = new KeyValueDto
+            {
+                Key = persianTitles["ClinicaNotes"],
+                Value = rawData.ExperimentInformation.ClinicaNotes
+            },
+            TestLimitations = new KeyValueDto
+            {
+                Key = persianTitles["TestLimitations"],
+                Value = rawData.ExperimentInformation.TestLimitations
+            }
+        };
 
         return new SuccessDataResult<ExperimentInformationDto>(experimentDetail);
     }
@@ -315,6 +323,8 @@ public class ExperimentService : IExperimentService, IScopedDependency
             { "RelatedTests", "آزمایش‌های مرتبط" },
             { "ClinicaNotes", "یادداشت‌های کلینیکی" },
             { "TestLimitations", "محدودیت‌های آزمایش" },
+            { "Title", "عنوان" },
+            { "ImageId", "شناسه تصویر" }
         };
     }
 }
