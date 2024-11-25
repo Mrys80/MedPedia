@@ -889,7 +889,7 @@ namespace Teb.Data.Migrations
                     b.ToTable("PharmacologicalClassifications", "dbo");
                 });
 
-            modelBuilder.Entity("MedPedia.Entities.Entities.Prescription", b =>
+            modelBuilder.Entity("MedPedia.Entities.Entities.PrescriptionWriting", b =>
                 {
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
@@ -897,8 +897,24 @@ namespace Teb.Data.Migrations
 
                     SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
 
-                    b.Property<int>("ClassificationId")
+                    b.Property<string>("Description")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<int>("DiseaseId")
                         .HasColumnType("int");
+
+                    b.Property<string>("DrugIds")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("EnTitle")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("FaTitle")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
 
                     b.Property<string>("ImageId")
                         .HasColumnType("nvarchar(max)");
@@ -912,13 +928,9 @@ namespace Teb.Data.Migrations
                     b.Property<int>("RegUserId")
                         .HasColumnType("int");
 
-                    b.Property<string>("Title")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
-
                     b.HasKey("Id");
 
-                    b.ToTable("Prescriptions", "dbo");
+                    b.ToTable("PrescriptionWritings", "dbo");
                 });
 
             modelBuilder.Entity("MedPedia.Entities.Entities.Province", b =>
