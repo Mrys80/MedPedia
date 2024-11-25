@@ -4,6 +4,8 @@ using MedPedia.Common.Abstracts;
 using MedPedia.Common.Utilities.Enums;
 using MedPedia.Common.Utilities.Results;
 using MedPedia.Entities.Dto;
+using MedPedia.Entities.Dto.Disease;
+using MedPedia.Entities.Dto.Drug;
 using MedPedia.Entities.Dto.PrescriptionWriting;
 using MedPedia.Entities.Entities;
 using MedPedia.Services.Abstracts;
@@ -12,7 +14,12 @@ using Teb.Data.Abstracts;
 
 namespace MedPedia.Services.Concretes;
 
-public class PrescriptionWritingService(IRepository<PrescriptionWriting> prescriptionWritingRepository)
+public class PrescriptionWritingService(
+    IRepository<PrescriptionWriting> prescriptionWritingRepository,
+    IRepository<Drug> drugRepository,
+    IRepository<DrugCategory> drugCategoryRepository,
+    IRepository<Disease> diseaseRepository
+)
     : IPrescriptionWritingService, IScopedDependency
 {
     public async Task<IListResult<List<PrescriptionWritingGetDto>>> GetAllPrescriptions(
@@ -50,6 +57,37 @@ public class PrescriptionWritingService(IRepository<PrescriptionWriting> prescri
             return new ErrorDataResult<PrescriptionWritingDetailDto>(Messages.NotFound);
         }
 
+        var drugIds = prescription.DrugIds
+            .Split(',')
+            .Select(int.Parse)
+            .ToList();
+
+
+        var drugs = await (from drug in drugRepository.TableNoTracking
+            join category in drugCategoryRepository.TableNoTracking
+                on drug.DrugCategoryId equals category.Id into drugCategories
+            from category in drugCategories.DefaultIfEmpty()
+            where drugIds.Contains(drug.Id)
+            select new DrugDto
+            {
+                FaTitle = drug.FaTitle,
+                EnTitle = drug.EnTitle,
+                Brand = drug.Brand,
+                CategoryFaTitle = category != null ? category.FaTitle : null,
+                CategoryEnTitle = category != null ? category.EnTitle : null
+            }).ToListAsync(cancellationToken);
+
+        var disease = await diseaseRepository.TableNoTracking
+            .Where(d => d.Id == prescription.DiseaseId)
+            .Select(d => new DiseaseGetDto
+            {
+                Id = d.Id,
+                FaTitle = d.FaTitle,
+                EnTitle = d.EnTitle,
+                ImageId = d.ImageId
+            })
+            .FirstOrDefaultAsync(cancellationToken);
+
         var prescriptionDetailDto = new PrescriptionWritingDetailDto
         {
             Id = prescription.Id,
@@ -57,8 +95,8 @@ public class PrescriptionWritingService(IRepository<PrescriptionWriting> prescri
             ImageId = prescription.ImageId,
             EnTitle = prescription.EnTitle,
             Description = prescription.Description,
-            DrugIds = prescription.DrugIds.Split(',').Select(int.Parse).ToList(),
-            DiseaseIds = prescription.DiseaseId
+            Drugs = drugs,
+            Disease = disease
         };
 
         return new SuccessDataResult<PrescriptionWritingDetailDto>(prescriptionDetailDto);
