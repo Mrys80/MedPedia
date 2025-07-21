@@ -933,6 +933,35 @@ namespace Teb.Data.Migrations
                     b.ToTable("PrescriptionWritings", "dbo");
                 });
 
+            modelBuilder.Entity("MedPedia.Entities.Entities.PrescriptionWritingCategory", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
+
+                    b.Property<string>("ImageId")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<bool>("IsDeleted")
+                        .HasColumnType("bit");
+
+                    b.Property<DateTime>("RegDate")
+                        .HasColumnType("datetime2");
+
+                    b.Property<int>("RegUserId")
+                        .HasColumnType("int");
+
+                    b.Property<string>("Title")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.HasKey("Id");
+
+                    b.ToTable("PrescriptionWritingCategories", "dbo");
+                });
+
             modelBuilder.Entity("MedPedia.Entities.Entities.Province", b =>
                 {
                     b.Property<int>("Id")

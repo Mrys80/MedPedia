@@ -17,6 +17,7 @@ namespace MedPedia.Services.Concretes;
 public class PrescriptionWritingService(
     IRepository<PrescriptionWriting> prescriptionWritingRepository,
     IRepository<Drug> drugRepository,
+    IRepository<PrescriptionWritingCategory> prescriptionWritingCategoryRepository,
     IRepository<DrugCategory> drugCategoryRepository,
     IRepository<Disease> diseaseRepository
 )
@@ -100,6 +101,41 @@ public class PrescriptionWritingService(
         };
 
         return new SuccessDataResult<PrescriptionWritingDetailDto>(prescriptionDetailDto);
+    }
+
+    public async Task<IListResult<List<PrescriptionWritingCategoryGetDto>>> GetAllCategories(
+        CancellationToken cancellationToken)
+    {
+        var categories = await prescriptionWritingCategoryRepository
+            .GetListAsync(cat => cat.IsDeleted == false, cancellationToken);
+
+        var categoriesDto = categories.Select(cat => new PrescriptionWritingCategoryGetDto
+            {
+                Id = cat.Id,
+                Title = cat.Title,
+                ImageId = cat.ImageId
+            })
+            .ToList();
+
+        return new SuccessListResult<List<PrescriptionWritingCategoryGetDto>>(categoriesDto);
+    }
+
+    public async Task<IDataResult<PrescriptionWritingCategoryGetDto>> AddCategory(CurrentUserDto currentUser,
+        PrescriptionWritingCategoryAddDto addDto, CancellationToken cancellationToken)
+    {
+        var category = new PrescriptionWritingCategory
+        {
+            Title = addDto.Title,
+            ImageId = addDto.ImageId,
+            RegUserId = currentUser.UserId,
+            RegDate = DateTime.Now,
+            IsDeleted = false
+        };
+
+        await prescriptionWritingCategoryRepository.AddAsync(category, cancellationToken);
+
+        var categoryDto = category.Adapt<PrescriptionWritingCategoryGetDto>();
+        return new SuccessDataResult<PrescriptionWritingCategoryGetDto>(categoryDto);
     }
 
 

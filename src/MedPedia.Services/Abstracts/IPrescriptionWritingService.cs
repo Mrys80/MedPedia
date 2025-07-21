@@ -11,6 +11,11 @@ public interface IPrescriptionWritingService
     Task<IDataResult<PrescriptionWritingDetailDto>> GetPrescriptionDetail(int prescriptionId,
         CancellationToken cancellationToken);
 
+    Task<IListResult<List<PrescriptionWritingCategoryGetDto>>> GetAllCategories(CancellationToken cancellationToken);
+
+    Task<IDataResult<PrescriptionWritingCategoryGetDto>> AddCategory(CurrentUserDto currentUser,
+        PrescriptionWritingCategoryAddDto addDto, CancellationToken cancellationToken);
+
     Task<IDataResult<PrescriptionWritingGetDto>> AddPrescription(CurrentUserDto currentUser,
         PrescriptionWritingAddDto prescriptionDto, CancellationToken cancellationToken);
 
