@@ -45,6 +45,28 @@ namespace MedPedia.WebApi.Controllers.v1
 
             return Ok(result);
         }
+        
+        [HttpGet("[action]")]
+        public async Task<IActionResult> GetAllCategories(CancellationToken cancellationToken)
+        {
+            var result = await prescriptionWritingService.GetAllCategories(cancellationToken);
+
+            if (!result.IsSuccess)
+                return BadRequest(result);
+
+            return Ok(result);
+        }
+
+        [HttpPost("[action]")]
+        public async Task<IActionResult> AddCategory([FromBody] PrescriptionWritingCategoryAddDto addDto, CancellationToken cancellationToken)
+        {
+            var result = await prescriptionWritingService.AddCategory(CurrentUser, addDto, cancellationToken);
+
+            if (!result.IsSuccess)
+                return BadRequest(result);
+
+            return Ok(result);
+        }
 
         [HttpGet("[action]/{diseaseId:int}")]
         public async Task<IActionResult> GetPrescriptionsByDiseaseId(int diseaseId, CancellationToken cancellationToken)
